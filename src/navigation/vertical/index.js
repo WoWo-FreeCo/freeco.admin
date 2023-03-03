@@ -13,7 +13,7 @@ export default [
         to: 'apps-product-list',
       },
       {
-        title: '新建產品資料',
+        title: '新建產品',
         to: 'apps-product-add',
       },
     ],

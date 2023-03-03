@@ -2,6 +2,7 @@
 import axios from '@/plugins/service'
 import { DELETE_PRODUCT } from '@/plugins/service/requestURL'
 import { useProductStore } from '@/store/prodStore'
+import { useRouter } from 'vue-router'
 
 const prodStore = useProductStore()
 const searchQuery = ref('')
@@ -13,8 +14,11 @@ const totalProducts = ref(0)
 const products = ref([])
 const selectedRows = ref([])
 
+
 const isConfirmDialogOpen = ref(false)
 const selectedItem = ref()
+
+const router = useRouter()
 
 // 👉 Fetch Invoices
 watchEffect(() => {
@@ -52,6 +56,14 @@ function deleteItem(prod) {
   selectedItem.value = prod
   isConfirmDialogOpen.value = true
 }
+function editItem(prod) {
+  router.push({
+    path: `/apps/product/edit`,
+    query: {
+      id: prod.id,
+    },
+  })
+}
 function confirm(bool) {
   if(bool) {
     try {
@@ -61,7 +73,7 @@ function confirm(bool) {
       console.log(e)
     }
   }
-} 
+}
 </script>
 
 <template>
@@ -188,9 +200,12 @@ function confirm(bool) {
         >
           <!-- 👉 Id -->
           <td>
-            <RouterLink :to="{ name: 'apps-product-preview-id', params: { id: product.id } }">
+            <span>#{{ product?.id }}</span>
+            <!--
+              <RouterLink :to="{ name: 'apps-product-preview-id', params: { id: product.id } }">
               #{{ product?.id }}
-            </RouterLink>
+              </RouterLink> 
+            -->
           </td>
 
           <!-- 👉 產品名稱 -->
@@ -221,18 +236,20 @@ function confirm(bool) {
 
           <!-- 👉 Actions -->
           <td style="width: 4rem;">
-            <VBtn
+            <!--
+              <VBtn
               icon
               variant="text"
               color="default"
               size="x-small"
               :to="{ name: 'apps-product-preview-id', params: { id: product.id } }"
-            >
+              >
               <VIcon
-                :size="22"
-                icon="tabler-eye"
+              :size="22"
+              icon="tabler-eye"
               />
-            </VBtn>
+              </VBtn> 
+            -->
 
             <VBtn
               icon
@@ -247,7 +264,10 @@ function confirm(bool) {
 
               <VMenu activator="parent">
                 <VList>
-                  <VListItem :to="{ name: 'apps-product-edit-id', params: { id: product.id } }">
+                  <VListItem
+                    value="edit"
+                    @click="editItem(product)"
+                  >
                     <template #prepend>
                       <VIcon
                         size="24"
