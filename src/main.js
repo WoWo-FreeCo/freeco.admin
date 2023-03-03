@@ -25,3 +25,14 @@ app.use(layoutsPlugin)
 
 // Mount vue app
 app.mount('#app')
+
+router.beforeEach((to, from, next) => {
+  const loggedIn = localStorage.getItem('at')
+
+  if (loggedIn) {
+    return next()
+  }
+  else if (to.path === '/login')
+    next()
+  else next('/login')
+})

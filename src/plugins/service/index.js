@@ -26,6 +26,7 @@ axiosIns.interceptors.request.use(
   error => {
     // Do something with request error
     console.error('error:', error) // for debug
+    localStorage.removeItem('at')
     Promise.reject(error)
   },
 )

@@ -42,6 +42,10 @@ const paginationData = computed(() => {
   
   return `Showing ${ firstIndex } to ${ lastIndex } of ${ totalProducts.value } entries`
 })
+
+function deleteItem(prod) {
+  console.log(prod)
+}
 </script>
 
 <template>
@@ -238,7 +242,10 @@ const paginationData = computed(() => {
 
                     <VListItemTitle>Edit</VListItemTitle>
                   </VListItem>
-                  <VListItem value="delete">
+                  <VListItem
+                    value="delete"
+                    @click="deleteItem(product)"
+                  >
                     <template #prepend>
                       <VIcon
                         size="24"
