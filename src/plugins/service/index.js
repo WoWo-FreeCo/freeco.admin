@@ -25,11 +25,22 @@ axiosIns.interceptors.request.use(
   },
   error => {
     // Do something with request error
-    console.error('error:', error) // for debug
-    localStorage.removeItem('at')
     Promise.reject(error)
   },
 )
 
+
+axiosIns.interceptors.response.use(
+  response => response,
+  async error => {
+    const at = localStorage.getItem('at')
+    if (error.response && error.response.status === 401 && at) {
+      // TODO: refreshToken
+    }
+    location.reload()
+
+    return Promise.reject(error)
+  },
+)
 
 export default axiosIns

@@ -1,6 +1,5 @@
 <script setup>
 import avatar1 from '@images/avatars/avatar-1.png'
-import { useRouter } from 'vue-router'
 
 const router = useRouter()
 
