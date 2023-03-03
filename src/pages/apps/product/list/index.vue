@@ -1,4 +1,6 @@
 <script setup>
+import axios from '@/plugins/service'
+import { DELETE_PRODUCT } from '@/plugins/service/requestURL'
 import { useProductStore } from '@/store/prodStore'
 
 const prodStore = useProductStore()
@@ -10,6 +12,9 @@ const totalPage = ref(1)
 const totalProducts = ref(0)
 const products = ref([])
 const selectedRows = ref([])
+
+const isConfirmDialogOpen = ref(false)
+const selectedItem = ref()
 
 // 👉 Fetch Invoices
 watchEffect(() => {
@@ -44,8 +49,19 @@ const paginationData = computed(() => {
 })
 
 function deleteItem(prod) {
-  console.log(prod)
+  selectedItem.value = prod
+  isConfirmDialogOpen.value = true
 }
+function confirm(bool) {
+  if(bool) {
+    try {
+      console.log(selectedItem.value)
+      axios.delete(`/${DELETE_PRODUCT(selectedItem.value.id)}`)
+    } catch(e) {
+      console.log(e)
+    }
+  }
+} 
 </script>
 
 <template>
@@ -299,6 +315,11 @@ function deleteItem(prod) {
       />
     </VCardText>
     <!-- !SECTION -->
+    <ConfirmDialog
+      v-model:isDialogVisible="isConfirmDialogOpen"
+      confirmation-msg="Are you sure you want to deactivate your account?"
+      @confirm="confirm"
+    />
   </VCard>
 </template>
 

@@ -36,8 +36,11 @@ axiosIns.interceptors.response.use(
     const at = localStorage.getItem('at')
     if (error.response && error.response.status === 401 && at) {
       // TODO: refreshToken
+      localStorage.removeItem('at')
+      setTimeout(() => {
+        location.reload()
+      }, 500)
     }
-    location.reload()
 
     return Promise.reject(error)
   },
