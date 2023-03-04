@@ -170,7 +170,7 @@ function getProdType(type) {
             scope="col"
             class="text-center"
           >
-            分類
+            運送類型
           </th>
           
           <th

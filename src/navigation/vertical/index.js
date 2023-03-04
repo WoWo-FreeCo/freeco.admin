@@ -16,6 +16,10 @@ export default [
         title: '新建商品',
         to: 'apps-product-add',
       },
+      {
+        title: '新建商品分類',
+        to: 'apps-product-add-category',
+      },
     ],
   },
 ]
