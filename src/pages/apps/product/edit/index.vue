@@ -177,9 +177,9 @@ async function updateProd() {
 
     alert('已更新商品資訊')
 
-    router.push({
-      path: '/apps/product/list',
-    })
+    // router.push({
+    //   path: '/apps/product/list',
+    // })
   } catch(e) {
     console.log(e)
   }
