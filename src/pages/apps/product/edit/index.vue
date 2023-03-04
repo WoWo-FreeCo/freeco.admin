@@ -265,6 +265,54 @@ function closeRenaming() {
   console.log(222)
   isRenaming.value = false
 }
+function removeFromImages(img) {
+  imagesPreviewURL.value = imagesPreviewURL.value.filter(e => e.id !== img.id)
+}
+function onLastImageUpload($event) {
+  const fileReader = new FileReader()
+  const [file] = $event.target.files || undefined
+
+  $event.target.value = null
+
+  fileReader.readAsDataURL(file)
+  fileReader.onload = async () => {
+    const formData = new FormData()
+    const { size } = file
+    const fileSize = size / 1024 / 1024
+    if (fileSize > 1.0) {
+      return alert('圖片檔案過大，請重新上傳 < 1mb')
+    }
+    formData.append('image', file)
+
+    const res = await fetch(`${baseURL}/${POST_PRODUCT_IMAGE}`, {
+      method: 'POST',
+      body: formData,
+    })
+
+    const data = await res.json()
+
+    if (!data.filenames.length) return
+    console.log(data)
+
+    const url = `${baseURL}/${data.filenames[0]}`
+
+    imagesPreviewURL.value.push({
+      id: Math.random() * 99999,
+      url,
+    })
+  }
+}
+function swapImages(index, dir = '') {
+  if (!dir) return
+  
+  if (dir === 'next') {
+    [imagesPreviewURL.value[index], imagesPreviewURL.value[index+1]] = [imagesPreviewURL.value[index+1], imagesPreviewURL.value[index]]
+  }
+  else if (dir === 'prev') {
+    [imagesPreviewURL.value[index], imagesPreviewURL.value[index-1]] = [imagesPreviewURL.value[index-1], imagesPreviewURL.value[index]]
+  }
+  console.log(imagesPreviewURL.value, index)
+}
 </script>
 
 <template>
@@ -359,7 +407,7 @@ function closeRenaming() {
           accept="image/*"
           show-size
           counter
-          color="primary"
+          color="success"
           label="上傳商品縮圖"
           @click:clear="clearImage"
         />
@@ -389,12 +437,54 @@ function closeRenaming() {
           v-if="imagesPreviewURL"
           class="images-flex"
         >
-          <VImg
-            v-for="img in imagesPreviewURL"
+          <div
+            v-for="img, index in imagesPreviewURL"
             :key="img?.id || img?.url || img?.img"
-            width="200"
-            :src="img.url"
-          />
+            class="image-element"
+          >
+            <VImg
+              width="200"
+              :src="img.url"
+            />
+            <VIcon
+              class="icon"
+              :size="22"
+              color="error"
+              icon="tabler-circle-x"
+              @click="removeFromImages(img)"
+            />
+            <VIcon
+              v-show="index !== 0"
+              class="icon to-prev"
+              :size="22"
+              color="info"
+              icon="tabler-arrow-narrow-left"
+              @click="swapImages(index, 'prev')"
+            />
+            <VIcon
+              v-show="index !== (imagesPreviewURL.length - 1)"
+              class="icon to-next"
+              :size="22"
+              color="info"
+              icon="tabler-arrow-narrow-right"
+              @click="swapImages(index, 'next')"
+            />
+          </div>
+          <div class="plus-image d-flex">
+            <VIcon
+              :size="100"
+              color="success"
+              icon="tabler-circle-plus"
+            />
+            <input
+              id="plus-new-image"
+              class="upload-image"
+              type="file"
+              accept="image/*"
+              name="upload-image"
+              @change="onLastImageUpload"
+            >
+          </div>
         </div>
       </VCol>
 
@@ -459,7 +549,7 @@ function closeRenaming() {
             <VBtn
               icon
               variant="text"
-              color="primary"
+              color="success"
               size="x-small"
               @click="confirmRenameMarkdown"
             >
@@ -528,6 +618,7 @@ function closeRenaming() {
 }
 
 .images-flex {
+  position: relative;
   display: flex;
   flex-wrap: wrap;
   gap: 4px;
@@ -537,5 +628,44 @@ function closeRenaming() {
     flex-basis: 200px;
     max-inline-size: 200px;
   }
+}
+
+.image-element {
+  position: relative;
+}
+
+.icon {
+  position: absolute;
+  cursor: pointer;
+  inset-block-start: 0;
+  inset-inline-end: 0;
+
+  &.to-next {
+    inset-inline-end: 24px;
+  }
+
+  &.to-prev {
+    inset-inline-end: 48px;
+  }
+}
+
+.plus-image {
+  position: relative;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  inline-size: 200px;
+  min-block-size: 160px;
+}
+
+#plus-new-image {
+  position: absolute;
+  appearance: none;
+  block-size: 100%;
+  cursor: pointer;
+  inline-size: 100%;
+  inset-block-start: 0;
+  inset-inline-start: 0;
+  opacity: 0;
 }
 </style>
