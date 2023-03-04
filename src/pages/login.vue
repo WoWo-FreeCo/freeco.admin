@@ -1,5 +1,4 @@
 <script setup>
-import AuthProvider from '@/views/pages/authentication/AuthProvider.vue'
 import { useGenerateImageVariant } from '@core/composable/useGenerateImageVariant'
 import authV2LoginIllustrationBorderedDark from '@images/pages/auth-v2-login-illustration-bordered-dark.png'
 import authV2LoginIllustrationBorderedLight from '@images/pages/auth-v2-login-illustration-bordered-light.png'
@@ -7,7 +6,6 @@ import authV2LoginIllustrationDark from '@images/pages/auth-v2-login-illustratio
 import authV2LoginIllustrationLight from '@images/pages/auth-v2-login-illustration-light.png'
 import authV2MaskDark from '@images/pages/misc-mask-dark.png'
 import authV2MaskLight from '@images/pages/misc-mask-light.png'
-import { VNodeRenderer } from '@layouts/components/VNodeRenderer'
 import { themeConfig } from '@themeConfig'
 import {
   emailValidator,
@@ -81,31 +79,36 @@ async function submitLogin() {
         class="mt-12 mt-sm-0 pa-4"
       >
         <VCardText>
-          <VNodeRenderer
+          <!-- <VImg src="/favicon.png" /> -->
+          <!--
+            <VNodeRenderer
             :nodes="themeConfig.app.logo"
             class="mb-6"
-          />
+            /> 
+          -->
 
           <h5 class="text-h5 font-weight-semibold mb-1">
-            Welcome to {{ themeConfig.app.title }}! 👋🏻
+            歡迎來到 {{ themeConfig.app.title }} 後台管理系統 👋🏻
           </h5>
           <p class="mb-0">
-            Please sign-in to your account and start the adventure
+            請輸入管理帳號與密碼來登入
           </p>
         </VCardText>
-        <VCardText>
+        <!--
+          <VCardText>
           <VAlert
-            color="primary"
-            variant="tonal"
+          color="primary"
+          variant="tonal"
           >
-            <p class="text-caption mb-2">
-              Admin Email: <strong>admin@demo.com</strong> / Pass: <strong>admin</strong>
-            </p>
-            <p class="text-caption mb-0">
-              Client Email: <strong>client@demo.com</strong> / Pass: <strong>client</strong>
-            </p>
+          <p class="text-caption mb-2">
+          Admin Email: <strong>admin@demo.com</strong> / Pass: <strong>admin</strong>
+          </p>
+          <p class="text-caption mb-0">
+          Client Email: <strong>client@demo.com</strong> / Pass: <strong>client</strong>
+          </p>
           </VAlert>
-        </VCardText>
+          </VCardText> 
+        -->
         <VCardText>
           <VForm @submit.prevent="submitLogin">
             <VRow>
@@ -123,62 +126,69 @@ async function submitLogin() {
               <VCol cols="12">
                 <VTextField
                   v-model="password"
-                  label="Password"
+                  label="密碼"
+                  class="mb-4"
                   :rules="[requiredValidator]"
                   :type="isPasswordVisible ? 'text' : 'password'"
                   :append-inner-icon="isPasswordVisible ? 'tabler-eye-off' : 'tabler-eye'"
                   @click:append-inner="isPasswordVisible = !isPasswordVisible"
                 />
 
-                <div class="d-flex align-center flex-wrap justify-space-between mt-2 mb-4">
+                <!--
+                  <div class="d-flex align-center flex-wrap justify-space-between mt-2 mb-4">
                   <VCheckbox
-                    v-model="rememberMe"
-                    label="Remember me"
+                  v-model="rememberMe"
+                  label="Remember me"
                   />
                   <a
-                    class="text-primary ms-2 mb-1"
-                    href="#"
+                  class="text-primary ms-2 mb-1"
+                  href="#"
                   >
-                    Forgot Password?
+                  忘記密碼
                   </a>
-                </div>
+                  </div> 
+                -->
 
                 <VBtn
                   block
                   type="submit"
                 >
-                  Login
+                  登入
                 </VBtn>
               </VCol>
 
               <!-- create account -->
-              <VCol
+              <!--
+                <VCol
                 cols="12"
                 class="text-center"
-              >
+                >
                 <span>New on our platform?</span>
                 <a
-                  class="text-primary ms-2"
-                  href="#"
+                class="text-primary ms-2"
+                href="#"
                 >
-                  Create an account
+                Create an account
                 </a>
-              </VCol>
-              <VCol
+                </VCol> 
+              -->
+              <!--
+                <VCol
                 cols="12"
                 class="d-flex align-center"
-              >
+                >
                 <VDivider />
                 <span class="mx-4">or</span>
                 <VDivider />
-              </VCol>
+                </VCol> 
+              -->
 
               <!-- auth providers -->
               <VCol
                 cols="12"
                 class="text-center"
               >
-                <AuthProvider />
+                <!-- <AuthProvider /> -->
               </VCol>
             </VRow>
           </VForm>
