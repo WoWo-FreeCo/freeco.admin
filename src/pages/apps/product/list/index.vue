@@ -276,7 +276,7 @@ function confirm(bool) {
                       />
                     </template>
 
-                    <VListItemTitle>Edit</VListItemTitle>
+                    <VListItemTitle>編輯</VListItemTitle>
                   </VListItem>
                   <VListItem
                     value="delete"
@@ -290,7 +290,7 @@ function confirm(bool) {
                       />
                     </template>
 
-                    <VListItemTitle>Delete</VListItemTitle>
+                    <VListItemTitle>刪除</VListItemTitle>
                   </VListItem>
                 </VList>
               </VMenu>
@@ -337,7 +337,7 @@ function confirm(bool) {
     <!-- !SECTION -->
     <ConfirmDialog
       v-model:isDialogVisible="isConfirmDialogOpen"
-      confirmation-msg="Are you sure you want to deactivate your account?"
+      confirmation-msg="確定要刪除選擇的商品？"
       @confirm="confirm"
     />
   </VCard>
