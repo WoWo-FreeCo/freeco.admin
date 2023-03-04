@@ -30,7 +30,7 @@
       >
         <i :class="icon" />
       </button>
-      <button @click="addImage">
+      <button class="upload-button">
         <svg
           xmlns="http://www.w3.org/2000/svg"
           style="width: 20px; height: 20px;"
@@ -45,6 +45,14 @@
             d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
           />
         </svg>
+        <input
+          id="editor-upload-image"
+          class="upload-image"
+          type="file"
+          accept="image/*"
+          name="upload-image"
+          @change="onImageUpload"
+        >
       </button>
     </div>
 
@@ -73,6 +81,11 @@ import TextAlign from '@tiptap/extension-text-align'
 import Underline from '@tiptap/extension-underline'
 import StarterKit from '@tiptap/starter-kit'
 import { Editor, EditorContent } from '@tiptap/vue-3'
+
+import { POST_PRODUCT_IMAGE } from '@/plugins/service/requestURL'
+
+const baseURL =
+  import.meta.env.VITE_API_BASE
 
 export default {
   components: {
@@ -213,28 +226,72 @@ export default {
 
       vm.toggleHeading({ level: index }).run()
     },
-    addImage() {
-      const url = window.prompt(
-        'Image URL',
 
-        // Using picsum.photo/id/... and NOT
-        // picsum.photos/w/h or the image will
-        // change when we change the size and
-        // tiptap redraws
-        `https://picsum.photos/id/${
-          Math.floor(Math.random() * 200) + 1
-        }/200/300`,
-      )
+    // addImage() {
+    //   const url = window.prompt(
+    //     'Image URL',
+    //     `https://picsum.photos/id/${
+    //       Math.floor(Math.random() * 200) + 1
+    //     }/200/300`,
+    //   )
 
-      if (url) {
+    //   if (url) {
+    //     this.editor.chain().focus().setImage({ src: url, width: '100px' }).run()
+    //   }
+    // },
+    onImageUpload($event) {
+      const fileReader = new FileReader()
+      const [file] = $event.target.files || undefined
+
+      $event.target.value = null
+
+      fileReader.readAsDataURL(file)
+      fileReader.onload = async () => {
+        const formData = new FormData()
+        const { size } = file
+        const fileSize = size / 1024 / 1024
+        if (fileSize > 1.0) {
+          return alert('圖片檔案過大，請重新上傳 < 1mb')
+        }
+        formData.append('image', file)
+
+        const res = await fetch(`${baseURL}/${POST_PRODUCT_IMAGE}`, {
+          method: 'POST',
+          body: formData,
+        })
+
+        const data = await res.json()
+
+        if (!data.filenames.length) return
+        const url = `${baseURL}/${data.filenames[0]}`
+
         this.editor.chain().focus().setImage({ src: url, width: '100px' }).run()
       }
+
+      // if (url) {
+      //   this.editor.chain().focus().setImage({ src: url, width: '100px' }).run()
+      // }
     },
   },
 }
 </script>
 
 <style lang="less" scoped>
+.upload-button {
+  position: relative;
+  cursor: pointer;
+}
+#editor-upload-image {
+  position: absolute;
+  top: 0;
+  left: 0;
+  border: 1px solid red;
+  width: 100%;
+  height: 100%;
+  appearance: none;
+  opacity: 0;
+  cursor: pointer;
+}
 #text-editor {
   border: 1px solid #808080;
 

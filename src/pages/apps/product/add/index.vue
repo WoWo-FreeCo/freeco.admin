@@ -1,6 +1,6 @@
 <script setup>
 import axios from '@/plugins/service'
-import { POST_PRODUCT } from '@/plugins/service/requestURL'
+import { POST_PRODUCT, POST_PRODUCT_IMAGE } from '@/plugins/service/requestURL'
 import router from '@/router'
 import { useProductStore } from '@/store/prodStore'
 
@@ -57,7 +57,7 @@ watch(prodImage, async _new => {
 
     formData.append('image', prodImage.value[0])
 
-    const res = await fetch(`https://api.wowo.tw/api/v1/image`, {
+    const res = await fetch(`${baseURL}/${POST_PRODUCT_IMAGE}`, {
       method: 'POST',
       body: formData,
     })

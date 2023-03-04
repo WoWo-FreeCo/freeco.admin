@@ -47,3 +47,65 @@ svg.iconify {
 .ProseMirror-focused {
   border: 2px solid #fff;
 }
+
+.ProseMirror {
+  // block-size: 100vh;
+  outline: none;
+
+  // max-height: 80vh;
+  overflow-y: auto;
+  padding-inline: 0.5em;
+
+  > p:first-child {
+    margin-block-start: 0.5em;
+  }
+
+  > h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    &:first-child {
+      margin-block-start: 0.5em;
+    }
+  }
+
+  img {
+    display: block;
+    block-size: 300px;
+    inline-size: 100%;
+    margin-inline: auto;
+    max-inline-size: 100%;
+    object-fit: contain;
+    object-position: left;
+
+    &.ProseMirror-selectednode {
+      outline: 3px solid #68cef8;
+    }
+  }
+}
+
+.html-container {
+  display: flex;
+  flex-direction: column;
+
+  > img {
+    display: block;
+    block-size: 300px;
+
+    // inline-size: 100%;
+    margin-inline: auto;
+    object-fit: contain;
+    object-position: left;
+
+    &.ProseMirror-selectednode {
+      outline: 3px solid #68cef8;
+    }
+  }
+}
+
+.html-container-root {
+  padding-block: 24px !important;
+  padding-inline: 20px !important;
+}
