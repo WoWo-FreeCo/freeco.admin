@@ -15,7 +15,7 @@ const loading = ref(true)
 
 const imagePreviewURL = ref('')
 
-const inputField = ref({
+const initialInput = {
   skuId: "",
   categoryName: "",
   name: "",
@@ -24,9 +24,9 @@ const inputField = ref({
   vipPrice: 0,
   svipPrice: 0,
   attribute: '一般',
+}
 
-  // coverImagePath: '',
-})
+const inputField = ref(initialInput)
 
 const productType = [
   '一般', '冷鏈',
@@ -108,7 +108,11 @@ async function createProd() {
 }
 function clearImage() {
   imagePreviewURL.value = ''
-  console.log(122, imagePreviewURL.value)
+}
+function resetInput() {
+  inputField.value = {
+    ...initialInput,
+  }
 }
 </script>
 
@@ -235,8 +239,8 @@ function clearImage() {
 
         <VBtn
           color="secondary"
-          type="reset"
           variant="tonal"
+          @click="resetInput"
         >
           清除
         </VBtn>

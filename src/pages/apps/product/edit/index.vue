@@ -17,7 +17,7 @@ const imagePreviewURL = ref('')
 const route = useRoute()
 const router = useRouter()
 
-const inputField = ref({
+const initialInput = {
   skuId: "",
   categoryName: "",
   name: "",
@@ -28,7 +28,9 @@ const inputField = ref({
   attribute: '一般',
 
   // coverImagePath: '',
-})
+}
+
+const inputField = ref(initialInput)
 
 const productType = [
   '一般', '冷鏈',
@@ -153,6 +155,12 @@ function setInitValue() {
 function clearImage() {
   imagePreviewURL.value = ''
   console.log(122, imagePreviewURL.value)
+}
+function resetInput() {
+  inputField.value = {
+    ...initialInput,
+  }
+  imagePreviewURL.value = ''
 }
 </script>
 
@@ -279,8 +287,8 @@ function clearImage() {
 
         <VBtn
           color="secondary"
-          type="reset"
           variant="tonal"
+          @click="resetInput"
         >
           清除
         </VBtn>
