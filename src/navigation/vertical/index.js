@@ -9,8 +9,12 @@ export default [
     icon: { icon: 'tabler-file' },
     children: [
       {
-        title: '商品一覽',
+        title: '商品清單',
         to: 'apps-product-list',
+      },
+      {
+        title: '商品分類清單',
+        to: 'apps-product-category-list',
       },
       {
         title: '新建商品',
@@ -18,7 +22,7 @@ export default [
       },
       {
         title: '新建商品分類',
-        to: 'apps-product-add-category',
+        to: 'apps-product-category-add',
       },
     ],
   },

@@ -27,14 +27,11 @@ async function createProdCategory() {
 
     alert('已建立商品分類')
     router.push({
-      path: '/apps/product/list',
+      path: '/apps/product-category/list',
     })
   } catch(e) {
     console.log(e)
   }
-}
-function clearImage() {
-  imagePreviewURL.value = ''
 }
 function resetInput() {
   inputField.value = {

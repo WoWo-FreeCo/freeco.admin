@@ -1,6 +1,6 @@
 <script setup>
 import axios from '@/plugins/service'
-import { DELETE_PRODUCT } from '@/plugins/service/requestURL'
+import { DELETE_PRODUCT_CATEGORY } from '@/plugins/service/requestURL'
 import { useProductStore } from '@/store/prodStore'
 import { useRouter } from 'vue-router'
 
@@ -10,8 +10,8 @@ const selectedStatus = ref()
 const rowPerPage = ref(10)
 const currentPage = ref(1)
 const totalPage = ref(1)
-const totalProducts = ref(0)
-const products = ref([])
+const totalCategories = ref(0)
+const categories = ref([])
 const selectedRows = ref([])
 
 
@@ -20,17 +20,24 @@ const selectedItem = ref()
 
 const router = useRouter()
 
-// 👉 Fetch Invoices
-onMounted(async() => {
+onMounted(async () => {
   await fetchData()
 })
 
+async function fetchData() {
+  prodStore.fetchProductCategory({
+  }).then(response => {
+    categories.value = response.data.data
+    console.log(categories.value)
+  }).catch(error => {
+    console.log(error)
+  })
+}
 
-const _products = computed(() =>
-  searchQuery.value ? products.value?.filter(
+const _categories = computed(() =>
+  searchQuery.value ? categories.value?.filter(
     e=> e?.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
-  )
-    :products.value)
+  ) : categories.value)
 
 // 👉 Fetch Invoices
 watchEffect(() => {
@@ -38,32 +45,23 @@ watchEffect(() => {
     currentPage.value = totalPage.value
 })
 
-async function fetchData() {
-  prodStore.fetchProducts({
-  }).then(response => {
-    products.value = response.data.data
-  }).catch(error => {
-    console.log(error)
-  })
-}
-
 // 👉 Computing pagination data
 const paginationData = computed(() => {
-  const firstIndex = products.value.length ? (currentPage.value - 1) * rowPerPage.value + 1 : 0
-  const lastIndex = products.value.length + (currentPage.value - 1) * rowPerPage.value
+  const firstIndex = categories.value.length ? (currentPage.value - 1) * rowPerPage.value + 1 : 0
+  const lastIndex = categories.value.length + (currentPage.value - 1) * rowPerPage.value
   
-  return `Showing ${ firstIndex } to ${ lastIndex } of ${ totalProducts.value } entries`
+  return `Showing ${ firstIndex } to ${ lastIndex } of ${ totalCategories.value } entries`
 })
 
-function deleteItem(prod) {
-  selectedItem.value = prod
+function deleteItem(item) {
+  selectedItem.value = item
   isConfirmDialogOpen.value = true
 }
-function editItem(prod) {
+function editItem(item) {
   router.push({
-    path: `/apps/product/edit`,
+    path: `/apps/product-category/edit`,
     query: {
-      id: prod.id,
+      id: item.id,
     },
   })
 }
@@ -71,23 +69,18 @@ async function confirm(bool) {
   if(bool) {
     try {
       console.log(selectedItem.value)
-      await axios.delete(`/${DELETE_PRODUCT(selectedItem.value.id)}`)
+      await axios.delete(`/${DELETE_PRODUCT_CATEGORY(selectedItem.value.id)}`)
       fetchData()
     } catch(e) {
       console.log(e)
     }
   }
 }
-function getProdType(type) {
-  if (type === 'COLD_CHAIN') return '冷鏈'
-  
-  return '一般'
-}
 </script>
 
 <template>
   <VCard
-    v-if="_products"
+    v-if="_categories"
     id="product-list"
   >
     <VCardText class="d-flex align-center flex-wrap gap-4">
@@ -110,9 +103,9 @@ function getProdType(type) {
         <!-- 👉 Create prod -->
         <VBtn
           prepend-icon="tabler-plus"
-          :to="{ name: 'apps-product-add' }"
+          :to="{ name: 'apps-product-category-add' }"
         >
-          新建商品
+          新建商品分類
         </VBtn>
       </div>
 
@@ -161,48 +154,7 @@ function getProdType(type) {
             scope="col"
             class="text-center"
           >
-            商品圖
-          </th>
-
-          <th
-            scope="col"
-            class="text-center"
-          >
-            運送類型
-          </th>
-          
-          <th
-            scope="col"
-            class="text-center"
-          >
-            商品名稱
-          </th>
-
-          <th
-            scope="col"
-            class="text-center"
-          >
-            定價
-          </th>
-          <th
-            scope="col"
-            class="text-center"
-          >
-            會員價
-          </th>
-
-          <th
-            scope="col"
-            class="text-center"
-          >
-            VIP價
-          </th>
-          
-          <th
-            scope="col"
-            class="text-center"
-          >
-            SVIP價
+            分類名稱
           </th>
 
           <th
@@ -217,78 +169,24 @@ function getProdType(type) {
       <!-- 👉 Table Body -->
       <tbody>
         <tr
-          v-for="product in _products"
-          :key="product.id"
+          v-for="item in _categories"
+          :key="item.id"
           style="height: 3.75rem;"
         >
           <!-- 👉 Id -->
           <td class="prod-id">
-            <span>#{{ product?.id }}</span>
-            <!--
-              <RouterLink :to="{ name: 'apps-product-preview-id', params: { id: product.id } }">
-              #{{ product?.id }}
-              </RouterLink> 
-            -->
-          </td>
-
-          <td class="prod-img">
-            <VAvatar>
-              <VImg :src="product?.coverImg" />
-            </VAvatar>
-          </td>
-
-          <!-- 👉 商品分類 -->
-          <td
-            class="text-center prod-name"
-          >
-            {{ getProdType(product?.attribute) }}
+            <span>#{{ item.id }}</span>
           </td>
 
           <!-- 👉 商品名稱 -->
           <td
             class="text-center prod-name"
           >
-            {{ product.name }}
+            {{ item.name }}
           </td>
-
-          <!-- 👉 定價 -->
-          <td class="text-center">
-            ${{ product.price }}
-          </td>
-
-          <!-- 👉 會員價 -->
-          <td class="text-center">
-            ${{ product.memberPrice }}
-          </td>
-
-          <!-- 👉 vip 價 -->
-          <td class="text-center">
-            ${{ product.vipPrice }}
-          </td>
-
-          <!-- 👉 svip 價 -->
-          <td class="text-center">
-            ${{ product.svipPrice }}
-          </td>
-
 
           <!-- 👉 Actions -->
           <td style="width: 4rem;">
-            <!--
-              <VBtn
-              icon
-              variant="text"
-              color="default"
-              size="x-small"
-              :to="{ name: 'apps-product-preview-id', params: { id: product.id } }"
-              >
-              <VIcon
-              :size="22"
-              icon="tabler-eye"
-              />
-              </VBtn> 
-            -->
-
             <VBtn
               icon
               variant="text"
@@ -304,7 +202,7 @@ function getProdType(type) {
                 <VList>
                   <VListItem
                     value="edit"
-                    @click="editItem(product)"
+                    @click="editItem(item)"
                   >
                     <template #prepend>
                       <VIcon
@@ -319,7 +217,7 @@ function getProdType(type) {
                   </VListItem>
                   <VListItem
                     value="delete"
-                    @click="deleteItem(product)"
+                    @click="deleteItem(item)"
                   >
                     <template #prepend>
                       <VIcon
@@ -340,7 +238,7 @@ function getProdType(type) {
       </tbody>
 
       <!-- 👉 table footer  -->
-      <tfoot v-show="!products?.length">
+      <tfoot v-show="!categories?.length">
         <tr>
           <td
             colspan="8"
@@ -351,7 +249,6 @@ function getProdType(type) {
         </tr>
       </tfoot>
     </VTable>
-    <!-- !SECTION -->
 
     <VDivider />
 
@@ -377,7 +274,7 @@ function getProdType(type) {
     <!-- !SECTION -->
     <ConfirmDialog
       v-model:isDialogVisible="isConfirmDialogOpen"
-      confirmation-msg="確定要刪除選擇的商品？"
+      confirmation-msg="確定要刪除選擇的商品分類？"
       @confirm="confirm"
     />
   </VCard>
