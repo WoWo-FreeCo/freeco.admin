@@ -41,7 +41,9 @@ const categories = ref([])
 const products = ref()
 const curProd = ref()
 const curProdDetailName = ref('')
+const curEditedName = ref('')
 const markdownItems = ref()
+const isRenaming = ref(false)
 
 const route = useRoute()
 const router = useRouter()
@@ -248,6 +250,21 @@ function addMarkdownItem() {
     text: "請填入商品資訊",
   })
 }
+function renameMarkdown() {
+  isRenaming.value = true
+  curEditedName.value = curProdDetailName.value
+}
+function confirmRenameMarkdown() {
+  markdownItems.value.find(
+    e => e.title === curProdDetailName.value,
+  ).title = curEditedName.value
+  isRenaming.value = false
+  curProdDetailName.value = curEditedName.value
+}
+function closeRenaming() {
+  console.log(222)
+  isRenaming.value = false
+}
 </script>
 
 <template>
@@ -387,41 +404,89 @@ function addMarkdownItem() {
         </div>
       </VCol>
 
-      <VCol cols="12">
+      <VCol
+        cols="12"
+      >
         <div
           class="d-flex"
           cols="0"
         >
           <VSelect
+            v-if="!isRenaming"
             v-model="curProdDetailName"
             :items="markdownItems"
             label="當前頁籤"
             class="prod-tabs"
           />
-          <VBtn
-            icon
-            variant="text"
-            color="default"
-            size="x-small"
-            @click="isConfirmDialogOpen = true"
-          >
-            <VIcon
-              :size="22"
-              icon="tabler-minus"
-            />
-          </VBtn>
-          <VBtn
-            icon
-            variant="text"
-            color="default"
-            size="x-small"
-            @click="addMarkdownItem"
-          >
-            <VIcon
-              :size="22"
-              icon="tabler-plus"
-            />
-          </VBtn>
+          <VTextField
+            v-else
+            v-model="curEditedName"
+            label="請輸入新的頁籤名稱"
+          />
+          <div v-show="!isRenaming">
+            <VBtn
+              icon
+              variant="text"
+              color="default"
+              size="x-small"
+              @click="renameMarkdown"
+            >
+              <VIcon
+                :size="22"
+                icon="tabler-edit-circle"
+              />
+            </VBtn>
+            <VBtn
+              icon
+              variant="text"
+              color="default"
+              size="x-small"
+              @click="isConfirmDialogOpen = true"
+            >
+              <VIcon
+                :size="22"
+                icon="tabler-circle-minus"
+              />
+            </VBtn>
+            <VBtn
+              icon
+              variant="text"
+              color="default"
+              size="x-small"
+              @click="addMarkdownItem"
+            >
+              <VIcon
+                :size="22"
+                icon="tabler-circle-plus"
+              />
+            </VBtn>
+          </div>
+          <div v-show="isRenaming">
+            <VBtn
+              icon
+              variant="text"
+              color="primary"
+              size="x-small"
+              @click="confirmRenameMarkdown"
+            >
+              <VIcon
+                :size="22"
+                icon="tabler-circle-check"
+              />
+            </VBtn>
+            <VBtn
+              icon
+              variant="text"
+              color="error"
+              size="x-small"
+              @click="closeRenaming"
+            >
+              <VIcon
+                :size="22"
+                icon="tabler-circle-x"
+              />
+            </VBtn>
+          </div>
         </div>
         <RichTextEditor
           v-for="item in markdownItems"
