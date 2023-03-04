@@ -280,6 +280,7 @@ declare module '@vue/runtime-core' {
     ErrorHeader: typeof import('./src/@core/components/ErrorHeader.vue')['default']
     I18n: typeof import('./src/@core/components/I18n.vue')['default']
     Notifications: typeof import('./src/@core/components/Notifications.vue')['default']
+    RichTextEditor: typeof import('./src/@core/components/RichTextEditor.vue')['default']
     RouterLink: typeof import('vue-router')['RouterLink']
     RouterView: typeof import('vue-router')['RouterView']
     Shortcuts: typeof import('./src/@core/components/Shortcuts.vue')['default']

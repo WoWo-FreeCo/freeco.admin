@@ -1,6 +1,6 @@
 <script setup>
 import axios from '@/plugins/service'
-import { UPDATE_PRODUCT } from '@/plugins/service/requestURL'
+import { UPDATE_PRODUCT, UPDATE_PRODUCT_MARKDOWNINFO } from '@/plugins/service/requestURL'
 import { useProductStore } from '@/store/prodStore'
 import { useRouter } from 'vue-router'
 
@@ -10,12 +10,10 @@ const baseURL =
 const form = ref()
 const prodStore = useProductStore()
 
-const prodImage = ref()
-const loading = ref(true)
-const imagePreviewURL = ref('')
 
-const route = useRoute()
-const router = useRouter()
+const productType = [
+  '一般', '冷鏈',
+]
 
 const initialInput = {
   skuId: "",
@@ -30,21 +28,31 @@ const initialInput = {
   // coverImagePath: '',
 }
 
+const prodImage = ref()
+const loading = ref(true)
+const isConfirmDialogOpen = ref(false)
+const imagePreviewURL = ref('')
 const inputField = ref(initialInput)
-
-const productType = [
-  '一般', '冷鏈',
-]
-
 const rawCategories = ref({})
 const categories = ref([])
 const products = ref()
 const curProd = ref()
+const curProdDetailName = ref('')
+const markdownItems = ref()
 
-watchEffect(async() => {
+const route = useRoute()
+const router = useRouter()
+
+
+onMounted(async() => {
+  await fetchData()
+})
+
+async function fetchData() {
   try {
     const res = await prodStore.fetchProductCategory()
     const prodRes = await prodStore.fetchProducts()
+    const prodDetailRes = await prodStore.fetchProductDetail(route.query?.id)
     const arr = []
 
     res.data?.data?.forEach(e => {
@@ -53,11 +61,17 @@ watchEffect(async() => {
     categories.value = arr
     rawCategories.value = res.data.data
     products.value = prodRes.data.data
+    markdownItems.value = prodDetailRes.data.data?.markdownInfos
+    if (markdownItems.value.length) {
+      curProdDetailName.value = markdownItems.value[0].title
+    } else {
+      curProdDetailName.value = '目前標籤頁資料為空'
+    }
     setInitValue()
   } catch(error) {
-    console.log('error')
+    console.log(error)
   }
-})
+}
 
 watch(prodImage, async _new => {
   loading.value = !prodImage.value[0]
@@ -105,7 +119,12 @@ async function updateProd() {
       delete body.coverImagePath
     }
 
-    const res = await axios.put(`/${UPDATE_PRODUCT(curProd.value.id)}`, body)
+    await axios.put(`/${UPDATE_PRODUCT(curProd.value.id)}`, body)
+    console.log(markdownItems.value)
+    
+    await axios.put(`/${UPDATE_PRODUCT_MARKDOWNINFO(curProd.value.id)}`, {
+      markdownInfos: [...markdownItems.value],
+    })
 
     alert('已更新商品資訊')
 
@@ -157,18 +176,29 @@ function clearImage() {
   console.log(122, imagePreviewURL.value)
 }
 function resetInput() {
-  inputField.value = {
-    ...initialInput,
-  }
-  imagePreviewURL.value = ''
+  fetchData()
+}
+function confirmDeleteMarkdown(bool) {
+  if (!bool) return
+  markdownItems.value = markdownItems.value.filter(e => e.title !== curProdDetailName.value)
+  curProdDetailName.value = markdownItems.value.length ? markdownItems.value[0].title : '目前標籤頁為空'
+}
+function addMarkdownItem() {
+  const newTabName = '商品資訊頁籤'
+
+  curProdDetailName.value = newTabName
+  markdownItems.value.push({
+    title: newTabName,
+    text: "請填入商品資訊",
+  })
 }
 </script>
 
 <template>
   <VForm
     ref="form"
-    lazy-validation=""
-    @submit.prevent="updateProd"
+    lazy-validation
+    @submit.prevent="()=>{}"
   >
     <VRow>
       <VCol cols="12">
@@ -255,7 +285,7 @@ function resetInput() {
 
       <VCol
         cols="12"
-        class=" gap-4"
+        class="gap-4"
       >
         <VFileInput
           v-model="prodImage"
@@ -273,6 +303,41 @@ function resetInput() {
         />
       </VCol>
 
+      <VCol cols="12">
+        <div
+          class="d-flex"
+          cols="0"
+        >
+          <VSelect
+            v-model="curProdDetailName"
+            :items="markdownItems"
+            label="當前頁籤"
+          />
+          <VBtn
+            style="width: 40px;"
+            type="remove"
+            @click="isConfirmDialogOpen = true"
+          >
+            -
+          </VBtn>
+          <VBtn
+            style="width: 40px;"
+            type="add"
+            @click="addMarkdownItem"
+          >
+            +
+          </VBtn>
+        </div>
+        <RichTextEditor
+          v-for="item in markdownItems"
+          v-show="curProdDetailName === item.title"
+          :key="item?.title"
+          v-model="item.text"
+          class="editor"
+          :max-limit="999999"
+        />
+      </VCol>
+
 
       <VCol
         cols="12"
@@ -281,6 +346,7 @@ function resetInput() {
         <!-- 👉 submit and reset button -->
         <VBtn
           type="submit"
+          @click="updateProd"
         >
           更新
         </VBtn>
@@ -290,9 +356,21 @@ function resetInput() {
           variant="tonal"
           @click="resetInput"
         >
-          清除
+          復原資料
         </VBtn>
       </VCol>
     </VRow>
+    <!--  -->
+    <ConfirmDialog
+      v-model:isDialogVisible="isConfirmDialogOpen"
+      confirmation-msg="確定要刪除當前的商品頁籤？文字資料將無法復原"
+      @confirm="confirmDeleteMarkdown"
+    />
   </VForm>
 </template>
+
+<style lang="scss" scoped>
+.editor {
+  margin-block-start: 20px;
+}
+</style>

@@ -31,12 +31,14 @@ export const POST_USER_DAILY_CHECK = _id => `${prefix}/user/activity/daily-check
 export const POST_PAYMENT_PRE = `${prefix}/payment/pre-settlement`
 export const POST_PAYMENT = `${prefix}/payment`
 export const POST_CANCEL_ORDER = _id => `${prefix}/order/${_id}/cancel`
+export const POST_ADMIN_REFRESH_TOKEN = `${prefix}/admin/user/refresh`
 
 export const UPDATE_HOME_BANNER = _id => `${prefix}/admin/home-banner/${_id}`
 export const UPDATE_PRODUCT = _id => `${prefix}/admin/product/${_id}`
 export const UPDATE_PRODUCT_CATEGORY = _id => `${prefix}/admin/product-category/${_id}`
 export const UPDATE_WEB_PAGES = _id => `${prefix}/admin/web-page/${_id}`
 export const UPDATE_USER_PROFILE = `${prefix}/user/basic`
+export const UPDATE_PRODUCT_MARKDOWNINFO = _id => `${prefix}/admin/product/${_id}/markdownInfos`
 
 export const DELETE_HOME_BANNER = _id => `${prefix}/admin/home-banner/${_id}`
 export const DELETE_PRODUCT = _id => `${prefix}/admin/product/${_id}`
