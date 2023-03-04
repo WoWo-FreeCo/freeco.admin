@@ -399,18 +399,28 @@ function addMarkdownItem() {
             class="prod-tabs"
           />
           <VBtn
-            style="width: 40px;"
-            type="remove"
+            icon
+            variant="text"
+            color="default"
+            size="x-small"
             @click="isConfirmDialogOpen = true"
           >
-            -
+            <VIcon
+              :size="22"
+              icon="tabler-minus"
+            />
           </VBtn>
           <VBtn
-            style="width: 40px;"
-            type="add"
+            icon
+            variant="text"
+            color="default"
+            size="x-small"
             @click="addMarkdownItem"
           >
-            +
+            <VIcon
+              :size="22"
+              icon="tabler-plus"
+            />
           </VBtn>
         </div>
         <RichTextEditor

@@ -35,15 +35,41 @@ axiosIns.interceptors.response.use(
   async error => {
     const at = localStorage.getItem('at')
     if (error.response && error.response.status === 401 && at) {
-      // TODO: refreshToken
-      localStorage.removeItem('at')
-      setTimeout(() => {
-        location.reload()
-      }, 500)
+      try {
+        const res = await fetch(`${baseURL}/api/v1/admin/user/refresh`, {
+          method: 'post',
+          headers: new Headers({
+            authorization: `Bearer ${localStorage.getItem('at')}`,
+          }),
+        })
+
+        const { accessToken } = await res.json()
+
+        localStorage.setItem('at', accessToken)
+
+        if (!error.config || !accessToken) {
+          reloadPage()
+        }
+
+        if (error.config?.headers) {
+          error.config.headers.Authorization = `Bearer ${accessToken}`
+        }
+        
+        return axios(error.config)
+      } catch (error) {
+        // 
+      }
+      reloadPage()
     }
 
     return Promise.reject(error)
   },
 )
 
+function reloadPage() {
+  localStorage.removeItem('at')
+  setTimeout(() => {
+    location.reload()
+  }, 500)
+}
 export default axiosIns
