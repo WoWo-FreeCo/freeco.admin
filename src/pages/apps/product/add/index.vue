@@ -74,13 +74,13 @@ watch(prodImage, async _new => {
 async function createProd() {
   try {
     if (!inputField.value.attribute) {
-      return alert('請選擇產品運送類型')
+      return alert('請選擇商品運送類型')
     }
     if (!inputField.value.skuId) {
-      return alert('請輸入產品標籤')
+      return alert('請輸入商品標籤')
     }
     if (!inputField.value.categoryName) {
-      return alert('請選擇產品分類')
+      return alert('請選擇商品分類')
     }
 
     const body = {
@@ -98,7 +98,7 @@ async function createProd() {
 
     const res = await axios.post(`/${POST_PRODUCT}`, body)
 
-    alert('已建立產品')
+    alert('已建立商品')
     router.push({
       path: '/apps/product/list',
     })
@@ -126,18 +126,18 @@ function resetInput() {
       <VCol cols="12">
         <VTextField
           v-model="inputField.name"
-          label="產品名稱"
+          label="商品名稱"
           required
-          placeholder="產品名稱"
+          placeholder="商品名稱"
         />
       </VCol>
 
       <VCol cols="12">
         <VTextField
           v-model="inputField.skuId"
-          label="產品標籤"
+          label="商品標籤"
           required
-          placeholder="產品標籤"
+          placeholder="商品標籤"
         />
       </VCol>
 
@@ -189,7 +189,7 @@ function resetInput() {
         <VSelect
           v-model="inputField.categoryName"
           :items="categories"
-          label="產品分類"
+          label="商品分類"
           name="select-1"
           require
         />
@@ -199,7 +199,7 @@ function resetInput() {
         <VSelect
           v-model="inputField.attribute"
           :items="productType"
-          label="產品運送類型"
+          label="商品運送類型"
           name="select-2"
           require
         />
@@ -215,7 +215,7 @@ function resetInput() {
           show-size
           counter
           color="primary"
-          label="上傳產品圖"
+          label="上傳商品圖"
           @click:clear="clearImage"
         />
         <VImg

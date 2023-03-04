@@ -5,15 +5,15 @@ export default [
     icon: { icon: 'tabler-smart-home' },
   },
   {
-    title: '產品',
+    title: '商品管理',
     icon: { icon: 'tabler-file' },
     children: [
       {
-        title: '產品一覽',
+        title: '商品一覽',
         to: 'apps-product-list',
       },
       {
-        title: '新建產品',
+        title: '新建商品',
         to: 'apps-product-add',
       },
     ],
