@@ -109,7 +109,7 @@ function confirm(bool) {
           prepend-icon="tabler-plus"
           :to="{ name: 'apps-product-add' }"
         >
-          新建產品資料
+          新建商品資料
         </VBtn>
       </div>
 
@@ -121,7 +121,7 @@ function confirm(bool) {
           <VTextField
             v-model="searchQuery"
             style="width: 140px;"
-            placeholder="搜尋產品"
+            placeholder="搜尋商品"
             density="compact"
           />
         </div>
@@ -158,7 +158,14 @@ function confirm(bool) {
             scope="col"
             class="text-center"
           >
-            產品名稱
+            商品圖
+          </th>
+          
+          <th
+            scope="col"
+            class="text-center"
+          >
+            商品名稱
           </th>
 
           <th
@@ -214,8 +221,17 @@ function confirm(bool) {
             -->
           </td>
 
-          <!-- 👉 產品名稱 -->
-          <td class="text-center">
+          <td style="width: 3rem;">
+            <VAvatar>
+              <VImg :src="product?.coverImg" />
+            </VAvatar>
+          </td>
+
+
+          <!-- 👉 商品名稱 -->
+          <td
+            class="text-center prod-name"
+          >
             {{ product.name }}
           </td>
 
@@ -358,5 +374,11 @@ function confirm(bool) {
   .invoice-list-filter {
     inline-size: 12rem;
   }
+}
+
+.prod-name {
+  overflow: hidden;
+  max-inline-size: 200px;
+  text-overflow: ellipsis;
 }
 </style>
