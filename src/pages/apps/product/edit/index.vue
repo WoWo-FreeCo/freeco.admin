@@ -177,9 +177,9 @@ async function updateProd() {
 
     alert('已更新商品資訊')
 
-    // useRouter().push({
-    //   path: '/apps/product/list',
-    // })
+    router.push({
+      path: '/apps/product/list',
+    })
   } catch(e) {
     console.log(e)
   }
@@ -279,7 +279,6 @@ function closeRenaming() {
           v-model="inputField.name"
           label="商品名稱"
           required
-          placeholder="商品名稱"
         />
       </VCol>
 
@@ -288,7 +287,6 @@ function closeRenaming() {
           v-model="inputField.skuId"
           label="商品標籤"
           required
-          placeholder="商品標籤"
         />
       </VCol>
 
@@ -299,7 +297,6 @@ function closeRenaming() {
           required
           min="0"
           type="number"
-          placeholder="定價"
         />
       </VCol>
 
@@ -310,7 +307,6 @@ function closeRenaming() {
           required
           type="number"
           min="0"
-          placeholder="會員價"
         />
       </VCol>
 
@@ -321,7 +317,6 @@ function closeRenaming() {
           required
           type="number"
           min="0"
-          placeholder="VIP價"
         />
       </VCol>
 
@@ -332,7 +327,6 @@ function closeRenaming() {
           required
           type="number"
           min="0"
-          placeholder="SVIP價"
         />
       </VCol>
 

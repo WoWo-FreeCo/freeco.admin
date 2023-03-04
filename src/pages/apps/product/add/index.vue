@@ -165,7 +165,6 @@ function resetInput() {
           v-model="inputField.name"
           label="商品名稱"
           required
-          placeholder="商品名稱"
         />
       </VCol>
 
@@ -174,7 +173,6 @@ function resetInput() {
           v-model="inputField.skuId"
           label="商品標籤"
           required
-          placeholder="商品標籤"
         />
       </VCol>
 
@@ -185,7 +183,6 @@ function resetInput() {
           required
           min="0"
           type="number"
-          placeholder="定價"
         />
       </VCol>
 
@@ -196,7 +193,6 @@ function resetInput() {
           required
           type="number"
           min="0"
-          placeholder="會員價"
         />
       </VCol>
 
@@ -207,7 +203,6 @@ function resetInput() {
           required
           type="number"
           min="0"
-          placeholder="VIP價"
         />
       </VCol>
 
@@ -218,7 +213,6 @@ function resetInput() {
           required
           type="number"
           min="0"
-          placeholder="SVIP價"
         />
       </VCol>
 
