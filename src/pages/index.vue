@@ -13,7 +13,7 @@
           class="text-decoration-none"
         >
           WOWO 線上購物網站
-        </a> 來與此管理系統比對。
+        </a> 來與此管理系統進行對照。
       </VCardText>
       <VCardText>
         或者進入以下頁面
@@ -24,8 +24,13 @@
             </RouterLink>
           </li>
           <li>
-            <RouterLink to="/apps/product/add">
-              建立商品
+            <RouterLink to="/apps/user/list">
+              會員列表
+            </RouterLink>
+          </li>
+          <li>
+            <RouterLink to="/apps/order/list">
+              訂單列表
             </RouterLink>
           </li>
         </ul>

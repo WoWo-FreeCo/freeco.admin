@@ -6,14 +6,14 @@ export default [
   },
   {
     title: '商品管理',
-    icon: { icon: 'tabler-file' },
+    icon: { icon: 'tabler-shopping-cart' },
     children: [
       {
-        title: '商品清單',
+        title: '商品列表',
         to: 'apps-product-list',
       },
       {
-        title: '商品分類清單',
+        title: '商品分類列表',
         to: 'apps-product-category-list',
       },
       {
@@ -23,6 +23,26 @@ export default [
       {
         title: '新建商品分類',
         to: 'apps-product-category-add',
+      },
+    ],
+  },
+  {
+    title: '會員管理',
+    icon: { icon: 'tabler-user' },
+    children: [
+      {
+        title: '會員列表',
+        to: 'apps-user-list',
+      },
+    ],
+  },
+  {
+    title: '訂單管理',
+    icon: { icon: 'tabler-truck-delivery' },
+    children: [
+      {
+        title: '訂單列表',
+        to: 'apps-order-list',
       },
     ],
   },
