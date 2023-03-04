@@ -38,6 +38,12 @@ watchEffect(() => {
   })
 })
 
+const _products = computed(() =>
+  searchQuery.value ? products.value?.filter(
+    e=> e?.name.toLowerCase().includes(searchQuery.value.toLowerCase()),
+  )
+    :products.value)
+
 // 👉 Fetch Invoices
 watchEffect(() => {
   if (currentPage.value > totalPage.value)
@@ -78,7 +84,7 @@ function confirm(bool) {
 
 <template>
   <VCard
-    v-if="products"
+    v-if="_products"
     id="product-list"
   >
     <VCardText class="d-flex align-center flex-wrap gap-4">
@@ -194,7 +200,7 @@ function confirm(bool) {
       <!-- 👉 Table Body -->
       <tbody>
         <tr
-          v-for="product in products"
+          v-for="product in _products"
           :key="product.id"
           style="height: 3.75rem;"
         >
