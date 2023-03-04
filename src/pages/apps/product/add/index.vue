@@ -11,9 +11,11 @@ const form = ref()
 const prodStore = useProductStore()
 
 const prodImage = ref()
+const prodImages = ref()
 const loading = ref(true)
 
 const imagePreviewURL = ref('')
+const imagesPreviewURL = ref({})
 
 const initialInput = {
   skuId: "",
@@ -69,6 +71,41 @@ watch(prodImage, async _new => {
   } catch (e) {
     console.log(e)
   }
+})
+
+watch(prodImages, async _new => {
+  loading.value = true
+  try {
+    const formData = new FormData()
+
+    prodImages.value.forEach(img => {
+      formData.append('image', img)
+    })
+
+    console.log(prodImages.value)
+
+    const res = await fetch(`${baseURL}/${POST_PRODUCT_IMAGE}`, {
+      method: 'POST',
+      body: formData,
+    })
+
+    const data = await res.json()
+
+    console.log('圖片 response: ', data)
+
+    imagesPreviewURL.value = data.filenames.map(e => {
+      return {
+        url: `${baseURL}/${e}`,
+      }
+    })
+
+    console.log(imagesPreviewURL.value)
+
+    // imagePreviewURL.value = `${baseURL}/${data.filenames[0]}`
+  } catch (e) {
+    console.log(e)
+  }
+  loading.value = false
 })
 
 async function createProd() {
@@ -207,7 +244,7 @@ function resetInput() {
 
       <VCol
         cols="12"
-        class=" gap-4"
+        class="gap-4"
       >
         <VFileInput
           v-model="prodImage"
@@ -215,7 +252,7 @@ function resetInput() {
           show-size
           counter
           color="primary"
-          label="上傳商品圖"
+          label="上傳商品縮圖"
           @click:clear="clearImage"
         />
         <VImg
@@ -224,7 +261,6 @@ function resetInput() {
           :src="imagePreviewURL"
         />
       </VCol>
-
 
       <VCol
         cols="12"
@@ -248,3 +284,16 @@ function resetInput() {
     </VRow>
   </VForm>
 </template>
+
+<style lang="scss" scoped>
+.images-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+
+  > .v-img {
+    flex-basis: 200px;
+    max-inline-size: 200px;
+  }
+}
+</style>

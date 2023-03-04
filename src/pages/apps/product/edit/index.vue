@@ -1,6 +1,6 @@
 <script setup>
 import axios from '@/plugins/service'
-import { UPDATE_PRODUCT, UPDATE_PRODUCT_MARKDOWNINFO } from '@/plugins/service/requestURL'
+import { POST_PRODUCT_IMAGE, UPDATE_PRODUCT, UPDATE_PRODUCT_IMAGES, UPDATE_PRODUCT_MARKDOWNINFO } from '@/plugins/service/requestURL'
 import { useProductStore } from '@/store/prodStore'
 import { useRouter } from 'vue-router'
 
@@ -29,9 +29,12 @@ const initialInput = {
 }
 
 const prodImage = ref()
+const prodImages = ref()
+
 const loading = ref(true)
 const isConfirmDialogOpen = ref(false)
 const imagePreviewURL = ref('')
+const imagesPreviewURL = ref({})
 const inputField = ref(initialInput)
 const rawCategories = ref({})
 const categories = ref([])
@@ -80,7 +83,7 @@ watch(prodImage, async _new => {
 
     formData.append('image', prodImage.value[0])
 
-    const res = await fetch(`https://api.wowo.tw/api/v1/image`, {
+    const res = await fetch(`${baseURL}/${POST_PRODUCT_IMAGE}`, {
       method: 'POST',
       body: formData,
     })
@@ -92,6 +95,41 @@ watch(prodImage, async _new => {
   } catch (e) {
     console.log(e)
   }
+})
+
+watch(prodImages, async _new => {
+  loading.value = true
+  try {
+    const formData = new FormData()
+
+    prodImages.value.forEach(img => {
+      formData.append('image', img)
+    })
+
+    console.log(prodImages.value)
+
+    const res = await fetch(`${baseURL}/${POST_PRODUCT_IMAGE}`, {
+      method: 'POST',
+      body: formData,
+    })
+
+    const data = await res.json()
+
+    console.log('圖片 response: ', data)
+
+    imagesPreviewURL.value = data.filenames.map(e => {
+      return {
+        url: `${baseURL}/${e}`,
+      }
+    })
+
+    console.log(imagesPreviewURL.value)
+
+    // imagePreviewURL.value = `${baseURL}/${data.filenames[0]}`
+  } catch (e) {
+    console.log(e)
+  }
+  loading.value = false
 })
 
 async function updateProd() {
@@ -114,6 +152,7 @@ async function updateProd() {
     }
 
     delete body.categoryName
+  
 
     if (!imagePreviewURL.value) {
       delete body.coverImagePath
@@ -124,6 +163,14 @@ async function updateProd() {
     
     await axios.put(`/${UPDATE_PRODUCT_MARKDOWNINFO(curProd.value.id)}`, {
       markdownInfos: [...markdownItems.value],
+    })
+
+    await axios.put(`/${UPDATE_PRODUCT_IMAGES(curProd.value.id)}`, {
+      images: [...imagesPreviewURL.value.map(e => {
+        return {
+          img: e?.url || '',
+        }
+      })],
     })
 
     alert('已更新商品資訊')
@@ -154,6 +201,12 @@ function setInitValue() {
 
   curProd.value = prod
   imagePreviewURL.value = prod?.coverImg
+  imagesPreviewURL.value = prod?.images?.map(e=> {
+    return {
+      url: e.img,
+      id: e.index,
+    }
+  })
   console.log(prod)
 
   inputField.value = {
@@ -174,6 +227,9 @@ function setInitValue() {
 function clearImage() {
   imagePreviewURL.value = ''
   console.log(122, imagePreviewURL.value)
+}
+function clearImages() {
+  imagesPreviewURL.value = []
 }
 function resetInput() {
   fetchData()
@@ -293,7 +349,7 @@ function addMarkdownItem() {
           show-size
           counter
           color="primary"
-          label="上傳商品圖"
+          label="上傳商品縮圖"
           @click:clear="clearImage"
         />
         <VImg
@@ -301,6 +357,34 @@ function addMarkdownItem() {
           width="200"
           :src="imagePreviewURL"
         />
+      </VCol>
+
+      <VCol
+        cols="12"
+        class="gap-4"
+      >
+        <VFileInput
+          v-model="prodImages"
+          accept="image/*"
+          multiple
+          show-size
+          counter
+          color="primary"
+          label="上傳商品輪播圖"
+          @click:clear="clearImages"
+        />
+        
+        <div
+          v-if="imagesPreviewURL"
+          class="images-flex"
+        >
+          <VImg
+            v-for="img in imagesPreviewURL"
+            :key="img?.id || img?.url || img?.img"
+            width="200"
+            :src="img.url"
+          />
+        </div>
       </VCol>
 
       <VCol cols="12">
@@ -312,6 +396,7 @@ function addMarkdownItem() {
             v-model="curProdDetailName"
             :items="markdownItems"
             label="當前頁籤"
+            class="prod-tabs"
           />
           <VBtn
             style="width: 40px;"
@@ -337,7 +422,6 @@ function addMarkdownItem() {
           :max-limit="999999"
         />
       </VCol>
-
 
       <VCol
         cols="12"
@@ -372,5 +456,17 @@ function addMarkdownItem() {
 <style lang="scss" scoped>
 .editor {
   margin-block-start: 20px;
+}
+
+.images-flex {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-block-start: 20px;
+
+  > .v-img {
+    flex-basis: 200px;
+    max-inline-size: 200px;
+  }
 }
 </style>
