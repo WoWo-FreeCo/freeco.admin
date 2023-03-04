@@ -1,40 +1,21 @@
 <script setup>
 import axios from '@/plugins/service'
-import { POST_PRODUCT_IMAGE, UPDATE_PRODUCT } from '@/plugins/service/requestURL'
+import { UPDATE_PRODUCT } from '@/plugins/service/requestURL'
 import { useProductStore } from '@/store/prodStore'
 import { useRouter } from 'vue-router'
+
+const baseURL =
+  import.meta.env.VITE_API_BASE
 
 const form = ref()
 const prodStore = useProductStore()
 
 const prodImage = ref()
 const loading = ref(true)
+const imagePreviewURL = ref('')
 
 const route = useRoute()
 const router = useRouter()
-
-watch(prodImage, async() => {
-  loading.value = !prodImage.value[0]
-  try {
-    const headers = {
-      'Content-Type': 'multipart/form-data',
-    }
-
-    const formData = new FormData()
-
-    formData.append('image', prodImage.value[0])
- 
-    const res = await axios.post(`/${POST_PRODUCT_IMAGE}`, {
-      formData,
-    }, {
-      headers,
-    })
-
-    console.log('圖片 response: ', res)
-  } catch (e) {
-    console.log(e)
-  }
-})
 
 const inputField = ref({
   skuId: "",
@@ -76,6 +57,27 @@ watchEffect(async() => {
   }
 })
 
+watch(prodImage, async _new => {
+  loading.value = !prodImage.value[0]
+  try {
+    const formData = new FormData()
+
+    formData.append('image', prodImage.value[0])
+
+    const res = await fetch(`https://api.wowo.tw/api/v1/image`, {
+      method: 'POST',
+      body: formData,
+    })
+
+    const data = await res.json()
+
+    console.log('圖片 response: ', data)
+    imagePreviewURL.value = `${baseURL}/${data.filenames[0]}`
+  } catch (e) {
+    console.log(e)
+  }
+})
+
 async function updateProd() {
   try {
     if (!inputField.value.attribute) {
@@ -92,9 +94,14 @@ async function updateProd() {
       ...inputField.value,
       attribute: inputField.value.attribute === '冷鏈' ? 'COLD_CHAIN' : 'GENERAL',
       categoryId: rawCategories.value.find(e => e.name === inputField.value.categoryName).id,
+      coverImagePath: imagePreviewURL.value,
     }
 
     delete body.categoryName
+
+    if (!imagePreviewURL.value) {
+      delete body.coverImagePath
+    }
 
     const res = await axios.put(`/${UPDATE_PRODUCT(curProd.value.id)}`, body)
 
@@ -125,6 +132,7 @@ function setInitValue() {
   }
 
   curProd.value = prod
+  imagePreviewURL.value = prod?.coverImg
   console.log(prod)
 
   inputField.value = {
@@ -141,6 +149,10 @@ function setInitValue() {
 
     attribute: prod.attribute === 'COLD_CHAIN' ? '冷鏈' : '一般',
   }
+}
+function clearImage() {
+  imagePreviewURL.value = ''
+  console.log(122, imagePreviewURL.value)
 }
 </script>
 
@@ -233,14 +245,25 @@ function setInitValue() {
         />
       </VCol>
 
-      <VFileInput
-        v-model="prodImage"
-        accept="image/*"
-        show-size
-        counter
-        color="primary"
-        label="上傳產品圖"
-      />
+      <VCol
+        cols="12"
+        class=" gap-4"
+      >
+        <VFileInput
+          v-model="prodImage"
+          accept="image/*"
+          show-size
+          counter
+          color="primary"
+          label="上傳產品圖"
+          @click:clear="clearImage"
+        />
+        <VImg
+          v-if="imagePreviewURL"
+          width="200"
+          :src="imagePreviewURL"
+        />
+      </VCol>
 
 
       <VCol

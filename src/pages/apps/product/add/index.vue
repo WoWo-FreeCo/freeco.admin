@@ -7,7 +7,6 @@ import { useProductStore } from '@/store/prodStore'
 const baseURL =
   import.meta.env.VITE_API_BASE
 
-
 const form = ref()
 const prodStore = useProductStore()
 
