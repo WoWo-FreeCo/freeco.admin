@@ -294,7 +294,7 @@ function getProdType(type) {
             <VBtn
               icon
               variant="text"
-              color="default"
+              color="primary"
               size="x-small"
             >
               <VIcon
@@ -310,6 +310,7 @@ function getProdType(type) {
                   >
                     <template #prepend>
                       <VIcon
+                        color="success"
                         size="24"
                         class="me-3"
                         icon="tabler-pencil"
@@ -324,6 +325,7 @@ function getProdType(type) {
                   >
                     <template #prepend>
                       <VIcon
+                        color="error"
                         size="24"
                         class="me-3"
                         icon="tabler-trash"
