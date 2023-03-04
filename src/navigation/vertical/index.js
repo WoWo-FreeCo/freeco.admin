@@ -1,6 +1,6 @@
 export default [
   {
-    title: 'Home',
+    title: '首頁',
     to: { name: 'index' },
     icon: { icon: 'tabler-smart-home' },
   },

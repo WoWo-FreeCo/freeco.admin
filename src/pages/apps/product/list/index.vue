@@ -80,6 +80,11 @@ function confirm(bool) {
     }
   }
 }
+function getProdType(type) {
+  if (type === 'COLD_CHAIN') return '冷鏈'
+  
+  return '一般'
+}
 </script>
 
 <template>
@@ -160,6 +165,13 @@ function confirm(bool) {
           >
             商品圖
           </th>
+
+          <th
+            scope="col"
+            class="text-center"
+          >
+            分類
+          </th>
           
           <th
             scope="col"
@@ -212,7 +224,7 @@ function confirm(bool) {
           style="height: 3.75rem;"
         >
           <!-- 👉 Id -->
-          <td>
+          <td class="prod-id">
             <span>#{{ product?.id }}</span>
             <!--
               <RouterLink :to="{ name: 'apps-product-preview-id', params: { id: product.id } }">
@@ -221,12 +233,18 @@ function confirm(bool) {
             -->
           </td>
 
-          <td style="width: 3rem;">
+          <td class="prod-img">
             <VAvatar>
               <VImg :src="product?.coverImg" />
             </VAvatar>
           </td>
 
+          <!-- 👉 商品分類 -->
+          <td
+            class="text-center prod-name"
+          >
+            {{ getProdType(product?.attribute) }}
+          </td>
 
           <!-- 👉 商品名稱 -->
           <td
@@ -378,7 +396,17 @@ function confirm(bool) {
 
 .prod-name {
   overflow: hidden;
-  max-inline-size: 200px;
+  max-inline-size: 0;
   text-overflow: ellipsis;
+}
+
+.prod-id {
+  inline-size: 1rem;
+  max-inline-size: 80px;
+}
+
+.prod-img {
+  inline-size: 1rem;
+  max-inline-size: 80px;
 }
 </style>
