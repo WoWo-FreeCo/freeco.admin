@@ -25,6 +25,7 @@ export const ADMIN_LOGIN = `${prefix}/admin/user/login`
 export const POST_HOME_BANNER = `${prefix}/admin/home-banner`
 export const POST_PRODUCT = `${prefix}/admin/product`
 export const POST_PRODUCT_IMAGE = `${prefix}/image`
+export const POST_PRODUCT_INVENTORY = _id => `${prefix}/admin/product/${_id}/inventory/add`
 export const POST_PRODUCT_CATEGORY = `${prefix}/admin/product-category`
 export const POST_USER_ACTIVATATION = `${prefix}/user/activity/activate`
 export const POST_USER_DAILY_CHECK = _id => `${prefix}/user/activity/daily-check/${_id}`

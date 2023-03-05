@@ -1,6 +1,6 @@
 <script setup>
 import axios from '@/plugins/service'
-import { DELETE_PRODUCT } from '@/plugins/service/requestURL'
+import { DELETE_PRODUCT, POST_PRODUCT_INVENTORY } from '@/plugins/service/requestURL'
 import { useProductStore } from '@/store/prodStore'
 import { useRouter } from 'vue-router'
 
@@ -20,7 +20,9 @@ const selectedItem = ref()
 
 const router = useRouter()
 
-// 👉 Fetch Invoices
+const addInventoryQuantity = ref(1)
+const isInvDialogVisible = ref(false)
+
 onMounted(async() => {
   await fetchData()
 })
@@ -82,6 +84,26 @@ function getProdType(type) {
   if (type === 'COLD_CHAIN') return '冷鏈'
   
   return '一般'
+}
+function addInventory(item) {
+  isInvDialogVisible.value = true
+  selectedItem.value = item
+}
+async function confirmAddInventory() {
+  isInvDialogVisible.value = false
+
+  const quantity = parseInt(addInventoryQuantity.value)
+
+  try {
+    await axios.post(`/${POST_PRODUCT_INVENTORY(selectedItem.value.id)}`, {
+      quantity,
+    })
+  } catch(error) {
+    console.log(error)
+  }
+  await fetchData()
+  
+  addInventoryQuantity.value = 1
 }
 </script>
 
@@ -204,6 +226,13 @@ function getProdType(type) {
           >
             SVIP價
           </th>
+          
+          <th
+            scope="col"
+            class="text-center"
+          >
+            庫存
+          </th>
 
           <th
             scope="col"
@@ -253,24 +282,28 @@ function getProdType(type) {
 
           <!-- 👉 定價 -->
           <td class="text-center">
-            ${{ product.price }}
+            ${{ product?.price }}
           </td>
 
           <!-- 👉 會員價 -->
           <td class="text-center">
-            ${{ product.memberPrice }}
+            ${{ product?.memberPrice }}
           </td>
 
           <!-- 👉 vip 價 -->
           <td class="text-center">
-            ${{ product.vipPrice }}
+            ${{ product?.vipPrice }}
           </td>
 
           <!-- 👉 svip 價 -->
           <td class="text-center">
-            ${{ product.svipPrice }}
+            ${{ product?.svipPrice }}
           </td>
 
+          <!-- 👉 庫存 -->
+          <td class="text-center">
+            {{ product?.inventory?.quantity || 0 }}
+          </td>
 
           <!-- 👉 Actions -->
           <td style="width: 4rem;">
@@ -332,6 +365,36 @@ function getProdType(type) {
 
                     <VListItemTitle>刪除</VListItemTitle>
                   </VListItem>
+                  <VListItem
+                    value="delete"
+                    @click="addInventory(product)"
+                  >
+                    <template #prepend>
+                      <VIcon
+                        color="info"
+                        size="24"
+                        class="me-3"
+                        icon="tabler-plus"
+                      />
+                    </template>
+
+                    <VListItemTitle>新增庫存</VListItemTitle>
+                  </VListItem>
+                  <VListItem
+                    value="delete"
+                    @click=""
+                  >
+                    <template #prepend>
+                      <VIcon
+                        color="info"
+                        size="24"
+                        class="me-3"
+                        icon="tabler-minus"
+                      />
+                    </template>
+
+                    <VListItemTitle>減少庫存</VListItemTitle>
+                  </VListItem>
                 </VList>
               </VMenu>
             </VBtn>
@@ -380,6 +443,50 @@ function getProdType(type) {
       confirmation-msg="確定要刪除選擇的商品？"
       @confirm="confirm"
     />
+    <!--  -->
+    <VDialog
+      v-model="isInvDialogVisible"
+      scrollable
+      max-width="320"
+    >
+      <!-- Dialog close btn -->
+      <DialogCloseBtn @click="isInvDialogVisible = !isInvDialogVisible" />
+
+      <!-- Dialog Content -->
+      <VCard>
+        <VCardItem class="pb-5">
+          <VCardTitle>新增庫存數量</VCardTitle>
+        </VCardItem>
+
+        <VDivider />
+        <VCardText style="height: 200px;">
+          <VCol>
+            <VTextField
+              v-model="addInventoryQuantity"
+              label="數量"
+              required
+              min="1"
+              type="number"
+            />
+          </VCol>
+        </VCardText>
+
+        <VDivider />
+
+        <VCardText class="d-flex justify-end flex-wrap gap-3 pt-5">
+          <VBtn
+            color="secondary"
+            variant="tonal"
+            @click="isInvDialogVisible = false"
+          >
+            取消
+          </VBtn>
+          <VBtn @click="confirmAddInventory">
+            確定
+          </VBtn>
+        </VCardText>
+      </VCard>
+    </VDialog>
   </VCard>
 </template>
 
