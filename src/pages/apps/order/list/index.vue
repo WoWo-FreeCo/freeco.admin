@@ -105,7 +105,6 @@ function getFormattedData(date) {
 </script>
 
 <template>
-  <!-- eslint-disable vue/no-template-target-blank -->
   <VCard
     v-if="_orders"
     id="user-list"
