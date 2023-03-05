@@ -1,5 +1,6 @@
 <script setup>
 import axios from '@/plugins/service'
+import dayjs from 'dayjs'
 
 // import { DELETE_PRODUCT } from '@/plugins/service/requestURL'
 import { useOrderStore } from '@/store/orderStore'
@@ -95,6 +96,11 @@ function getStatus(status) {
   default:
     return status
   }
+}
+function getFormattedData(date) {
+  const _date = dayjs(date)
+  
+  return _date.format('YYYY/MM/DD A hh:mm')
 }
 </script>
 
@@ -204,7 +210,7 @@ function getStatus(status) {
           </td>
 
           <td class="text-center">
-            {{ order?.createdAt }}
+            {{ getFormattedData(order?.createdAt) }}
           </td>
 
           <td class="text-center">
