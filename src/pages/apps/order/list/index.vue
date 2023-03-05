@@ -84,7 +84,7 @@ function getStatus(status) {
   case 'WAIT_PAYMENT':
     return '待付款'
   case 'WAIT_DELIVER':
-    return '運送中'
+    return '已出貨'
   case 'WAIT_RECEIVE':
     return '待取貨'
   case 'COMPLETED':
@@ -92,7 +92,7 @@ function getStatus(status) {
   case 'CANCELLED':
     return '已取消'
   case 'REVOKED':
-    return '退貨'
+    return '已退貨'
   default:
     return status
   }
@@ -116,6 +116,7 @@ function getFormattedData(date) {
           target="_blank"
         >
           <VBtn
+            color="success"
             prepend-icon="tabler-external-link"
           >
             綠界訂單管理
