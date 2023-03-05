@@ -14,6 +14,7 @@ const totalOrders = ref(0)
 const orders = ref([])
 const selectedRows = ref([])
 const selectedStatus = ref()
+const selectedAttribute = ref()
 
 
 const isConfirmDialogOpen = ref(false)
@@ -25,16 +26,26 @@ onMounted(async() => {
   await fetchData()
 })
 
-const _orders = computed(() =>
-  searchQuery.value ? orders.value?.filter(
-    e=> e?.id?.toLowerCase().includes(searchQuery.value.toLowerCase()),
-  ) : orders.value)
-
-// 👉 Fetch Invoices
-watchEffect(() => {
-  if (currentPage.value > totalPage.value)
-    currentPage.value = totalPage.value
+const _orders = computed(() => {
+  let _order = orders.value
+  if(searchQuery.value) {
+    _order = _order?.filter(
+      e => e?.id?.toLowerCase().includes(searchQuery.value.toLowerCase()))
+  }
+  if(selectedStatus.value) {
+    _order = _order?.filter(e => getStatus(e?.orderStatus) === selectedStatus.value)
+  }
+  if(selectedAttribute.value) {
+    _order = _order?.filter(e => getAttributeType(e?.attribute) === selectedAttribute.value)
+  }
+  
+  return _order
 })
+
+// watchEffect(() => {
+//   if (currentPage.value > totalPage.value)
+//     currentPage.value = totalPage.value
+// })
 
 async function fetchData() {
   orderStore.fetchOrders({
@@ -129,24 +140,34 @@ function getFormattedData(date) {
 
       <div class="d-flex align-center flex-wrap gap-4">
         <!-- 👉 Search  -->
-        <div class="invoice-list-filter">
+        <div class="order-list-filter">
           <VTextField
             v-model="searchQuery"
-            style="width: 140px;"
+            style="width: 160px;"
             placeholder="搜尋訂單 #ID"
             density="compact"
           />
         </div>
-        <!-- 👉 Select status -->
-        <div class="invoice-list-filter">
+        <div class="order-attr-filter">
+          <VSelect
+            v-model="selectedAttribute"
+            style="width: 160px;"
+            label="運送類型"
+            clearable
+            clear-icon="tabler-x"
+            single-line
+            :items="['一般', '冷鏈']"
+          />
+        </div>
+        <div class="order-list-filter">
           <VSelect
             v-model="selectedStatus"
-            style="width: 140px;"
+            style="width: 160px;"
             label="訂單狀態"
             clearable
             clear-icon="tabler-x"
             single-line
-            :items="['待付款', '已出貨', '待取貨', '已完成', '已取消', '已退貨']"
+            :items="['待付款', '待出貨', '待取貨', '已完成', '已取消', '退貨/退款']"
           />
         </div>
       </div>
@@ -155,7 +176,7 @@ function getFormattedData(date) {
     <VDivider />
 
     <!-- SECTION Table -->
-    <VTable class="text-no-wrap invoice-list-table">
+    <VTable class="text-no-wrap order-list-table">
       <!-- 👉 Table head -->
       <thead class="text-uppercase">
         <tr>
@@ -349,12 +370,12 @@ function getFormattedData(date) {
 </template>
 
 <style lang="scss">
-#invoice-list {
-  .invoice-list-actions {
+#order-list {
+  .order-list-actions {
     inline-size: 8rem;
   }
 
-  .invoice-list-filter {
+  .order-list-filter {
     inline-size: 12rem;
   }
 }
