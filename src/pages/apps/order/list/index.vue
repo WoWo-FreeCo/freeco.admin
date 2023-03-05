@@ -13,6 +13,7 @@ const totalPage = ref(1)
 const totalOrders = ref(0)
 const orders = ref([])
 const selectedRows = ref([])
+const selectedStatus = ref()
 
 
 const isConfirmDialogOpen = ref(false)
@@ -84,7 +85,7 @@ function getStatus(status) {
   case 'WAIT_PAYMENT':
     return '待付款'
   case 'WAIT_DELIVER':
-    return '已出貨'
+    return '待出貨'
   case 'WAIT_RECEIVE':
     return '待取貨'
   case 'COMPLETED':
@@ -92,7 +93,7 @@ function getStatus(status) {
   case 'CANCELLED':
     return '已取消'
   case 'REVOKED':
-    return '已退貨'
+    return '退貨/退款'
   default:
     return status
   }
@@ -134,6 +135,18 @@ function getFormattedData(date) {
             style="width: 140px;"
             placeholder="搜尋訂單 #ID"
             density="compact"
+          />
+        </div>
+        <!-- 👉 Select status -->
+        <div class="invoice-list-filter">
+          <VSelect
+            v-model="selectedStatus"
+            style="width: 140px;"
+            label="訂單狀態"
+            clearable
+            clear-icon="tabler-x"
+            single-line
+            :items="['待付款', '已出貨', '待取貨', '已完成', '已取消', '已退貨']"
           />
         </div>
       </div>
