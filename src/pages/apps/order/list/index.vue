@@ -98,7 +98,7 @@ function getStatus(status) {
   case 'WAIT_DELIVER':
     return '待出貨'
   case 'WAIT_RECEIVE':
-    return '待取貨'
+    return '已出貨'
   case 'COMPLETED':
     return '已完成'
   case 'CANCELLED':
