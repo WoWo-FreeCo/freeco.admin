@@ -27,6 +27,7 @@ onMounted(async() => {
 })
 
 const _orders = computed(() => {
+  // 過濾 orders 的邏輯
   let _order = orders.value
   if(searchQuery.value) {
     _order = _order?.filter(
@@ -146,15 +147,10 @@ function downloadCSV(data) {
     id="user-list"
   >
     <VCardText class="d-flex flex-end flex-wrap gap-4 justify-end">
-      <VBtn
-        prepend-icon="tabler-file-export"
-        @click="exportData"
+      <div
+        class="d-flex gap-4"
+        style="margin-right: auto;"
       >
-        輸出報表
-      </VBtn>
-    </VCardText>
-    <VCardText class="d-flex align-center flex-wrap gap-4">
-      <div class="me-3">
         <a
           href="https://vendor.ecpay.com.tw/User/LogOn_Step1#"
           target="_blank"
@@ -166,7 +162,27 @@ function downloadCSV(data) {
             綠界訂單管理
           </VBtn>
         </a>
+        <a
+          href="https://admin.onewarehouse.net/order/list"
+          target="_blank"
+        >
+          <VBtn
+            color="success"
+            prepend-icon="tabler-external-link"
+          >
+            物流管理
+          </VBtn>
+        </a>
       </div>
+      <VBtn
+        prepend-icon="tabler-file-export"
+        @click="exportData"
+      >
+        輸出報表
+      </VBtn>
+    </VCardText>
+    <VCardText class="d-flex align-center flex-wrap gap-4">
+      <div class="me-3" />
 
       <VSpacer />
 
@@ -281,7 +297,9 @@ function downloadCSV(data) {
             {{ order?.createdAt }}
           </td>
 
-          <td class="text-center">
+          <td
+            class="text-center"
+          >
             {{ order?.orderStatus }}
           </td>
 
@@ -290,21 +308,6 @@ function downloadCSV(data) {
             v-if="false"
             style="width: 4rem;"
           >
-            <!--
-              <VBtn
-              icon
-              variant="text"
-              color="default"
-              size="x-small"
-              :to="{ name: 'apps-product-preview-id', params: { id: product.id } }"
-              >
-              <VIcon
-              :size="22"
-              icon="tabler-eye"
-              />
-              </VBtn> 
-            -->
-
             <VBtn
               icon
               variant="text"
