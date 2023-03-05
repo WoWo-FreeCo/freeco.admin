@@ -70,7 +70,7 @@ async function fetchData() {
     if (markdownItems.value.length) {
       curProdDetailName.value = markdownItems.value[0].title
     } else {
-      curProdDetailName.value = '目前標籤頁資料為空'
+      curProdDetailName.value = '目前標號頁資料為空'
     }
     setInitValue()
   } catch(error) {
@@ -140,7 +140,7 @@ async function updateProd() {
       return alert('請選擇商品運送類型')
     }
     if (!inputField.value.skuId) {
-      return alert('請輸入商品標籤')
+      return alert('請輸入商品標號')
     }
     if (!inputField.value.categoryName) {
       return alert('請選擇商品分類')
@@ -239,7 +239,7 @@ function resetInput() {
 function confirmDeleteMarkdown(bool) {
   if (!bool) return
   markdownItems.value = markdownItems.value.filter(e => e.title !== curProdDetailName.value)
-  curProdDetailName.value = markdownItems.value.length ? markdownItems.value[0].title : '目前標籤頁為空'
+  curProdDetailName.value = markdownItems.value.length ? markdownItems.value[0].title : '目前標號頁為空'
 }
 function addMarkdownItem() {
   const newTabName = '商品資訊頁籤'
@@ -333,7 +333,7 @@ function swapImages(index, dir = '') {
       <VCol cols="12">
         <VTextField
           v-model="inputField.skuId"
-          label="商品標籤"
+          label="商品標號"
           required
         />
       </VCol>

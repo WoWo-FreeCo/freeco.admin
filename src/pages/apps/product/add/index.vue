@@ -114,7 +114,7 @@ async function createProd() {
       return alert('請選擇商品運送類型')
     }
     if (!inputField.value.skuId) {
-      return alert('請輸入商品標籤')
+      return alert('請輸入商品標號')
     }
     if (!inputField.value.categoryName) {
       return alert('請選擇商品分類')
@@ -171,7 +171,7 @@ function resetInput() {
       <VCol cols="12">
         <VTextField
           v-model="inputField.skuId"
-          label="商品標籤"
+          label="商品標號"
           required
         />
       </VCol>

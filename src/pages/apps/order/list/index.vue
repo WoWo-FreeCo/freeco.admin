@@ -58,6 +58,7 @@ const _orders = computed(() => {
 
 async function fetchData() {
   orderStore.fetchOrders({
+    take: 200,
   }).then(response => {
     orders.value = response.data.data
   }).catch(error => {

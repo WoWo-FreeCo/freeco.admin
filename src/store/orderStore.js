@@ -5,7 +5,7 @@ import { defineStore } from 'pinia'
 export const useOrderStore = defineStore('OrderStore', {
   actions: {
     fetchOrders(params) {
-      return axios.get(`/${GET_ADMIN_ORDERS}?take=200`, { params })
+      return axios.get(`/${GET_ADMIN_ORDERS}`, { params })
     },
   },
 })
