@@ -16,6 +16,20 @@ const selectedRows = ref([])
 const selectedStatus = ref()
 const selectedAttribute = ref()
 
+const statusMenuItem = [
+  {
+    title: '待出貨',
+    value: 'WAIT_DELIVER',
+  },
+  {
+    title: '已出貨',
+    value: 'WAIT_RECEIVE',
+  },
+  {
+    title: '已退貨',
+    value: 'REVOKED',
+  },
+]
 
 const isConfirmDialogOpen = ref(false)
 const selectedItem = ref()
@@ -114,7 +128,7 @@ function getStatus(status) {
   case 'CANCELLED':
     return '已取消'
   case 'REVOKED':
-    return '退貨/退款'
+    return '已退貨'
   default:
     return status
   }
@@ -139,6 +153,12 @@ function downloadCSV(data) {
   document.body.appendChild(link)
   link.click()
   document.body.removeChild(link)
+}
+async function changeItemStatus(order, _status) {
+  console.log('CALL API, ', order, _status)
+
+  // await API 
+  await fetchData()
 }
 </script>
 
@@ -216,7 +236,7 @@ function downloadCSV(data) {
             clearable
             clear-icon="tabler-x"
             single-line
-            :items="['待付款', '待出貨', '待取貨', '已完成', '已取消', '退貨/退款']"
+            :items="['待付款', '待出貨', '待取貨', '已完成', '已取消', '已退貨']"
           />
         </div>
       </div>
@@ -301,7 +321,28 @@ function downloadCSV(data) {
           <td
             class="text-center"
           >
-            {{ order?.orderStatus }}
+            <!-- {{ order?.orderStatus }} -->
+            <VMenu>
+              <template #activator="{ props }">
+                <VBtn
+                  color="primary"
+                  v-bind="props"
+                >
+                  {{ order?.orderStatus }}
+                </VBtn>
+              </template>
+
+              <VList>
+                <VListItem
+                  v-for="item in statusMenuItem"
+                  :key="item.title"
+                  value="edit"
+                  @click="changeItemStatus(order, item.value)"
+                >
+                  <VListItemTitle>{{ item.title }}</VListItemTitle>
+                </VListItem>
+              </VList>
+            </VMenu>
           </td>
 
           <!-- 👉 Actions -->
