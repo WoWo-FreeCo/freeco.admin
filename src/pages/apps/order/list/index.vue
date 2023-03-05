@@ -1,5 +1,4 @@
 <script setup>
-import axios from '@/plugins/service'
 import dayjs from 'dayjs'
 
 // import { DELETE_PRODUCT } from '@/plugins/service/requestURL'
@@ -65,17 +64,18 @@ function editItem(prod) {
     },
   })
 }
-async function confirm(bool) {
-  if(bool) {
-    try {
-      console.log(selectedItem.value)
-      await axios.delete(`/${DELETE_PRODUCT(selectedItem.value.id)}`)
-      fetchData()
-    } catch(e) {
-      console.log(e)
-    }
-  }
-}
+
+// async function confirm(bool) {
+//   if(bool) {
+//     try {
+//       console.log(selectedItem.value)
+//       await axios.delete(`/${DELETE_PRODUCT(selectedItem.value.id)}`)
+//       fetchData()
+//     } catch(e) {
+//       console.log(e)
+//     }
+//   }
+// }
 function getAttributeType(type) {
   return type === 'GENERAL' ? '一般' : '冷鏈'
 }
@@ -105,21 +105,23 @@ function getFormattedData(date) {
 </script>
 
 <template>
+  <!-- eslint-disable vue/no-template-target-blank -->
   <VCard
     v-if="_orders"
     id="user-list"
   >
     <VCardText class="d-flex align-center flex-wrap gap-4">
       <div class="me-3">
-        <!-- 👉 Create -->
-        <!--
+        <a
+          href="/"
+          target="_blank"
+        >
           <VBtn
-          prepend-icon="tabler-plus"
-          :to="{ name: 'apps-product-add' }"
+            prepend-icon="tabler-external-link"
           >
-          新建商品
-          </VBtn> 
-        -->
+            綠界訂單管理
+          </VBtn>
+        </a>
       </div>
 
       <VSpacer />
@@ -323,11 +325,13 @@ function getFormattedData(date) {
       />
     </VCardText>
     <!-- !SECTION -->
-    <ConfirmDialog
+    <!--
+      <ConfirmDialog
       v-model:isDialogVisible="isConfirmDialogOpen"
       confirmation-msg="確定要刪除選擇的商品？"
       @confirm="confirm"
-    />
+      /> 
+    -->
   </VCard>
 </template>
 
