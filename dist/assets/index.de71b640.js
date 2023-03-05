@@ -1,1 +1,0 @@
-import{y as e,o as c,c as n}from"./index.3e6756d9.js";const o={};function r(t,s){return c(),n("div",null,"\u5167\u5BB9\u9801\u6B63\u5728\u7DE8\u8F2F\u4E2D")}const _=e(o,[["render",r]]);export{_ as default};

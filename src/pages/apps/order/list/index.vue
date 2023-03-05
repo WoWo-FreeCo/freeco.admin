@@ -38,6 +38,14 @@ const _orders = computed(() => {
   if(selectedAttribute.value) {
     _order = _order?.filter(e => getAttributeType(e?.attribute) === selectedAttribute.value)
   }
+  _order = _order.map(e => {
+    return {
+      ...e,
+      createdAt: getFormattedData(e.createdAt),
+      orderStatus: getStatus(e.orderStatus),
+      attribute: getAttributeType(e.attribute),
+    }
+  })
   
   return _order
 })
@@ -114,6 +122,22 @@ function getFormattedData(date) {
   
   return _date.format('YYYY/MM/DD A hh:mm')
 }
+function exportData() {
+  downloadCSV(_orders.value)
+}
+function downloadCSV(data) {
+  const headerRow = Object.keys(data[0]).join(",") + "\n"
+  const dataRows = data.map(row => Object.values(row).join(",")).join("\n")
+  const csvContent = "data:text/csv;charset=utf-8," + headerRow + dataRows
+  const encodedUri = encodeURI(csvContent)
+  const link = document.createElement("a")
+
+  link.setAttribute("href", encodedUri)
+  link.setAttribute("download", "data.csv")
+  document.body.appendChild(link)
+  link.click()
+  document.body.removeChild(link)
+}
 </script>
 
 <template>
@@ -121,10 +145,18 @@ function getFormattedData(date) {
     v-if="_orders"
     id="user-list"
   >
+    <VCardText class="d-flex flex-end flex-wrap gap-4 justify-end">
+      <VBtn
+        prepend-icon="tabler-file-export"
+        @click="exportData"
+      >
+        輸出報表
+      </VBtn>
+    </VCardText>
     <VCardText class="d-flex align-center flex-wrap gap-4">
       <div class="me-3">
         <a
-          href="/"
+          href="https://vendor.ecpay.com.tw/User/LogOn_Step1#"
           target="_blank"
         >
           <VBtn
@@ -238,7 +270,7 @@ function getFormattedData(date) {
           </td>
 
           <td class="text-center">
-            {{ getAttributeType(order?.attribute) }}
+            {{ order?.attribute }}
           </td>
           
           <td class="text-center">
@@ -246,11 +278,11 @@ function getFormattedData(date) {
           </td>
 
           <td class="text-center">
-            {{ getFormattedData(order?.createdAt) }}
+            {{ order?.createdAt }}
           </td>
 
           <td class="text-center">
-            {{ getStatus(order?.orderStatus) }}
+            {{ order?.orderStatus }}
           </td>
 
           <!-- 👉 Actions -->

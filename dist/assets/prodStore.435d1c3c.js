@@ -1,1 +1,0 @@
-import{a as e,c as r,d as o,e as a,f as s}from"./requestURL.e8351c03.js";import{bj as c}from"./index.3e6756d9.js";const T=c("ProductStore",{actions:{fetchProducts(t){return e.get(`/${r}?take=200`,{params:t})},fetchProductsByCategory(t){return e.get(`/${o(t)}`)},fetchProductCategory(){return e.get(`/${a}`)},fetchProductDetail(t){return e.get(`/${s(t)}`)}}});export{T as u};
