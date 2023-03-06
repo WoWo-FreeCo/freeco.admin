@@ -380,7 +380,7 @@ async function confirmAddInventory() {
 
                     <VListItemTitle>新增庫存</VListItemTitle>
                   </VListItem>
-                  <VListItem
+                  <!-- <VListItem
                     value="delete"
                     @click=""
                   >
@@ -394,7 +394,7 @@ async function confirmAddInventory() {
                     </template>
 
                     <VListItemTitle>減少庫存</VListItemTitle>
-                  </VListItem>
+                  </VListItem> -->
                 </VList>
               </VMenu>
             </VBtn>
