@@ -1,8 +1,8 @@
 <script setup>
-import axios from '@/plugins/service';
-import { UPDATE_PRODUCT } from '@/plugins/service/requestURL';
-import { useUserStore } from '@/store/userStore';
-import { useRouter } from 'vue-router';
+import axios from '@/plugins/service'
+import { UPDATE_PRODUCT } from '@/plugins/service/requestURL'
+import { useUserStore } from '@/store/userStore'
+import { useRouter } from 'vue-router'
 
 const baseURL =
   import.meta.env.VITE_API_BASE
@@ -12,6 +12,23 @@ const userStore = useUserStore()
 
 
 const initialInput = {
+  id: '',
+  email: '',
+  nickname: '',
+  taxIDNumber: '',
+  cellphone: '',
+  telephone: '',
+  addressOne: '',
+  addressTwo: '',
+  addressThree: '',
+  rewardCredit: 0,
+  recommendCode: '',
+  YouTubeChannelActivated: false,
+  FacebookGroupActivated: false,
+  IGFollowActivated: false,
+  VIPActivated: false,
+  SVIPActivated: false,
+  memberLevel: '',
 }
 
 const inputField = ref(initialInput)
@@ -88,24 +105,32 @@ function resetInput() {
     <VRow>
       <VCol cols="12">
         <VTextField
-          v-model="inputField.name"
-          label="商品名稱"
+          v-model="inputField.nickname"
+          label="用戶名稱"
           required
         />
       </VCol>
 
       <VCol cols="12">
         <VTextField
-          v-model="inputField.skuId"
-          label="商品標號"
+          v-model="inputField.memberLevel"
+          label="用戶等級"
           required
         />
       </VCol>
 
       <VCol cols="12">
         <VTextField
-          v-model="inputField.price"
-          label="定價"
+          v-model="inputField.email"
+          label="Email"
+          required
+        />
+      </VCol>
+
+      <VCol cols="12">
+        <VTextField
+          v-model="inputField.taxIDNumber"
+          label="統一編號"
           required
           min="0"
           type="number"
@@ -114,8 +139,8 @@ function resetInput() {
 
       <VCol cols="12">
         <VTextField
-          v-model="inputField.memberPrice"
-          label="會員價"
+          v-model="inputField.cellphone"
+          label="手機號碼"
           required
           type="number"
           min="0"
@@ -124,8 +149,8 @@ function resetInput() {
 
       <VCol cols="12">
         <VTextField
-          v-model="inputField.vipPrice"
-          label="VIP價"
+          v-model="inputField.telephone"
+          label="電話號碼"
           required
           type="number"
           min="0"
@@ -134,8 +159,35 @@ function resetInput() {
 
       <VCol cols="12">
         <VTextField
-          v-model="inputField.svipPrice"
-          label="SVIP價"
+          v-model="inputField.addressOne"
+          label="地址一"
+          required
+          type="text"
+        />
+      </VCol>
+
+      <VCol cols="12">
+        <VTextField
+          v-model="inputField.addressTwo"
+          label="地址二"
+          required
+          type="text"
+        />
+      </VCol>
+
+      <VCol cols="12">
+        <VTextField
+          v-model="inputField.addressThree"
+          label="地址三"
+          required
+          type="text"
+        />
+      </VCol>
+
+      <VCol cols="12">
+        <VTextField
+          v-model="inputField.rewardCredit"
+          label="紅利點數"
           required
           type="number"
           min="0"
@@ -143,206 +195,11 @@ function resetInput() {
       </VCol>
 
       <VCol cols="12">
-        <VSelect
-          v-model="inputField.categoryName"
-          :items="categories"
-          label="商品分類"
-          name="select-1"
-          require
-        />
-      </VCol>
-
-      <VCol cols="12">
-        <VSelect
-          v-model="inputField.attribute"
-          :items="productType"
-          label="商品運送類型"
-          name="select-2"
-          require
-        />
-      </VCol>
-
-      <VCol
-        cols="12"
-        class="gap-4"
-      >
-        <VFileInput
-          v-model="prodImage"
-          accept="image/*"
-          show-size
-          counter
-          color="success"
-          label="上傳商品縮圖"
-          @click:clear="clearImage"
-        />
-        <VImg
-          v-if="imagePreviewURL"
-          width="200"
-          :src="imagePreviewURL"
-        />
-      </VCol>
-
-      <VCol
-        cols="12"
-        class="gap-4"
-      >
-        <VFileInput
-          v-model="prodImages"
-          accept="image/*"
-          multiple
-          show-size
-          counter
-          color="primary"
-          label="上傳商品輪播圖"
-          @click:clear="clearImages"
-        />
-        
-        <div
-          v-if="imagesPreviewURL"
-          class="images-flex"
-        >
-          <div
-            v-for="img, index in imagesPreviewURL"
-            :key="img?.id || img?.url || img?.img"
-            class="image-element"
-          >
-            <VImg
-              width="200"
-              :src="img.url"
-            />
-            <VIcon
-              class="icon"
-              :size="22"
-              color="error"
-              icon="tabler-circle-x"
-              @click="removeFromImages(img)"
-            />
-            <VIcon
-              v-show="index !== 0"
-              class="icon to-prev"
-              :size="22"
-              color="info"
-              icon="tabler-arrow-narrow-left"
-              @click="swapImages(index, 'prev')"
-            />
-            <VIcon
-              v-show="index !== (imagesPreviewURL.length - 1)"
-              class="icon to-next"
-              :size="22"
-              color="info"
-              icon="tabler-arrow-narrow-right"
-              @click="swapImages(index, 'next')"
-            />
-          </div>
-          <div class="plus-image d-flex">
-            <VIcon
-              :size="100"
-              color="success"
-              icon="tabler-circle-plus"
-            />
-            <input
-              id="plus-new-image"
-              class="upload-image"
-              type="file"
-              accept="image/*"
-              name="upload-image"
-              @change="onLastImageUpload"
-            >
-          </div>
-        </div>
-      </VCol>
-
-      <VCol
-        cols="12"
-      >
-        <div
-          class="d-flex"
-          cols="0"
-        >
-          <VSelect
-            v-if="!isRenaming"
-            v-model="curProdDetailName"
-            :items="markdownItems"
-            label="當前頁籤"
-            class="prod-tabs"
-          />
-          <VTextField
-            v-else
-            v-model="curEditedName"
-            label="請輸入新的頁籤名稱"
-          />
-          <div v-show="!isRenaming">
-            <VBtn
-              icon
-              variant="text"
-              color="default"
-              size="x-small"
-              @click="renameMarkdown"
-            >
-              <VIcon
-                :size="22"
-                icon="tabler-edit-circle"
-              />
-            </VBtn>
-            <VBtn
-              icon
-              variant="text"
-              color="default"
-              size="x-small"
-              @click="isConfirmDialogOpen = true"
-            >
-              <VIcon
-                :size="22"
-                icon="tabler-circle-minus"
-              />
-            </VBtn>
-            <VBtn
-              icon
-              variant="text"
-              color="default"
-              size="x-small"
-              @click="addMarkdownItem"
-            >
-              <VIcon
-                :size="22"
-                icon="tabler-circle-plus"
-              />
-            </VBtn>
-          </div>
-          <div v-show="isRenaming">
-            <VBtn
-              icon
-              variant="text"
-              color="success"
-              size="x-small"
-              @click="confirmRenameMarkdown"
-            >
-              <VIcon
-                :size="22"
-                icon="tabler-circle-check"
-              />
-            </VBtn>
-            <VBtn
-              icon
-              variant="text"
-              color="error"
-              size="x-small"
-              @click="closeRenaming"
-            >
-              <VIcon
-                :size="22"
-                icon="tabler-circle-x"
-              />
-            </VBtn>
-          </div>
-        </div>
-        <RichTextEditor
-          v-for="item in markdownItems"
-          v-show="curProdDetailName === item.title"
-          :key="item?.title"
-          v-model="item.text"
-          class="editor"
-          :max-limit="999999"
+        <VTextField
+          v-model="inputField.recommendCode"
+          label="推薦碼"
+          required
+          type="text"
         />
       </VCol>
 
@@ -367,12 +224,6 @@ function resetInput() {
         </VBtn>
       </VCol>
     </VRow>
-    <!--  -->
-    <ConfirmDialog
-      v-model:isDialogVisible="isConfirmDialogOpen"
-      confirmation-msg="確定要刪除當前的商品頁籤？文字資料將無法復原"
-      @confirm="confirmDeleteMarkdown"
-    />
   </VForm>
 </template>
 

@@ -139,6 +139,7 @@ function getFormattedData(date) {
   return _date.format('YYYY/MM/DD A hh:mm')
 }
 function exportData() {
+  if (_orders.value.length == 0) return
   downloadCSV(_orders.value)
 }
 function downloadCSV(data) {
@@ -158,6 +159,7 @@ async function changeItemStatus(order, _status) {
   console.log('CALL API, ', order, _status)
 
   // await API 
+  // await axios.put('更新訂單狀態的request') 
   await fetchData()
 }
 </script>
