@@ -1,8 +1,8 @@
 <script setup>
-import dayjs from 'dayjs'
-
-// import { DELETE_PRODUCT } from '@/plugins/service/requestURL'
+import axios from '@/plugins/service/index'
+import { UPDATE_ORDER_STATUS } from '@/plugins/service/requestURL'
 import { useOrderStore } from '@/store/orderStore'
+import dayjs from 'dayjs'
 import { useRouter } from 'vue-router'
 
 const orderStore = useOrderStore()
@@ -26,9 +26,18 @@ const statusMenuItem = [
     value: 'WAIT_RECEIVE',
   },
   {
-    title: '已退貨',
-    value: 'REVOKED',
+    title: '待付款',
+    value: 'WAIT_PAYMENT',
   },
+  {
+    title: '已完成',
+    value: 'COMPLETED',
+  },
+
+  // {
+  //   title: '已退貨',
+  //   value: 'REVOKED',
+  // },
 ]
 
 const isConfirmDialogOpen = ref(false)
@@ -157,9 +166,13 @@ function downloadCSV(data) {
 }
 async function changeItemStatus(order, _status) {
   console.log('CALL API, ', order, _status)
-
-  // await API 
-  // await axios.put('更新訂單狀態的request') 
+  try {
+    await axios.post(`/${UPDATE_ORDER_STATUS(order.id)}`, {
+      orderStatus: _status,
+    })
+  } catch(e) {
+    console.log(e)
+  }
   await fetchData()
 }
 </script>

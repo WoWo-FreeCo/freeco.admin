@@ -41,6 +41,7 @@ export const UPDATE_WEB_PAGES = _id => `${prefix}/admin/web-page/${_id}`
 export const UPDATE_USER_PROFILE = `${prefix}/user/basic`
 export const UPDATE_PRODUCT_MARKDOWNINFO = _id => `${prefix}/admin/product/${_id}/markdownInfos`
 export const UPDATE_PRODUCT_IMAGES = _id => `${prefix}/admin/product/${_id}/images`
+export const UPDATE_ORDER_STATUS = _id => `${prefix}/admin/order/${_id}/order-status`
 
 export const DELETE_HOME_BANNER = _id => `${prefix}/admin/home-banner/${_id}`
 export const DELETE_PRODUCT = _id => `${prefix}/admin/product/${_id}`
