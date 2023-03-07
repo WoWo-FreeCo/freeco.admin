@@ -84,6 +84,7 @@ async function fetchData() {
     take: 200,
   }).then(response => {
     orders.value = response.data.data
+    console.log(orders.value)
   }).catch(error => {
     console.log(error)
   })
@@ -149,7 +150,20 @@ function getFormattedData(date) {
 }
 function exportData() {
   if (_orders.value.length == 0) return
-  downloadCSV(_orders.value)
+
+
+  const rawData = _orders.value.map(e => {
+    return {
+      id: e.id,
+      attribute: e.attribute,
+      createdAt: e.createdAt,
+      orderStatus: e.orderStatus,
+      price: e.price,
+      ...e?.consignee,
+    }
+  })
+
+  downloadCSV(rawData)
 }
 function downloadCSV(data) {
   const headerRow = Object.keys(data[0]).join(",") + "\n"
@@ -174,6 +188,15 @@ async function changeItemStatus(order, _status) {
     console.log(e)
   }
   await fetchData()
+}
+function previewItem(item) {
+  // 
+  router.push({
+    path: '/apps/order/preview',
+    query: {
+      id: item?.id,
+    },
+  })
 }
 </script>
 
@@ -299,14 +322,13 @@ async function changeItemStatus(order, _status) {
             訂單狀態
           </th>
 
-          <!-- 
-            <th
+          
+          <th
             scope="col"
             class="text-center"
-            >
+          >
             操作
-            </th> 
-          -->
+          </th>
         </tr>
       </thead>
 
@@ -362,7 +384,6 @@ async function changeItemStatus(order, _status) {
 
           <!-- 👉 Actions -->
           <td
-            v-if="false"
             style="width: 4rem;"
           >
             <VBtn
@@ -379,35 +400,52 @@ async function changeItemStatus(order, _status) {
               <VMenu activator="parent">
                 <VList>
                   <VListItem
-                    value="edit"
-                    @click="editItem(product)"
+                    value="preview"
+                    @click="previewItem(order)"
                   >
                     <template #prepend>
                       <VIcon
-                        color="success"
+                        color="info"
                         size="24"
                         class="me-3"
-                        icon="tabler-pencil"
+                        icon="tabler-eye"
                       />
+                    </template>
+
+                    <VListItemTitle>詳細資訊</VListItemTitle>
+                  </VListItem>
+                  <!--
+                    <VListItem
+                    value="edit"
+                    @click="editItem(product)"
+                    >
+                    <template #prepend>
+                    <VIcon
+                    color="success"
+                    size="24"
+                    class="me-3"
+                    icon="tabler-pencil"
+                    />
                     </template>
 
                     <VListItemTitle>編輯</VListItemTitle>
-                  </VListItem>
-                  <VListItem
+                    </VListItem>
+                    <VListItem
                     value="delete"
                     @click="deleteItem(product)"
-                  >
+                    >
                     <template #prepend>
-                      <VIcon
-                        color="error"
-                        size="24"
-                        class="me-3"
-                        icon="tabler-trash"
-                      />
+                    <VIcon
+                    color="error"
+                    size="24"
+                    class="me-3"
+                    icon="tabler-trash"
+                    />
                     </template>
 
                     <VListItemTitle>刪除</VListItemTitle>
-                  </VListItem>
+                    </VListItem> 
+                  -->
                 </VList>
               </VMenu>
             </VBtn>

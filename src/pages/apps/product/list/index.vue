@@ -380,21 +380,23 @@ async function confirmAddInventory() {
 
                     <VListItemTitle>新增庫存</VListItemTitle>
                   </VListItem>
-                  <!-- <VListItem
+                  <!--
+                    <VListItem
                     value="delete"
                     @click=""
-                  >
+                    >
                     <template #prepend>
-                      <VIcon
-                        color="info"
-                        size="24"
-                        class="me-3"
-                        icon="tabler-minus"
-                      />
+                    <VIcon
+                    color="info"
+                    size="24"
+                    class="me-3"
+                    icon="tabler-minus"
+                    />
                     </template>
 
                     <VListItemTitle>減少庫存</VListItemTitle>
-                  </VListItem> -->
+                    </VListItem> 
+                  -->
                 </VList>
               </VMenu>
             </VBtn>
