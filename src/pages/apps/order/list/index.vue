@@ -163,6 +163,7 @@ function exportData() {
     }
   })
 
+  console.log(rawData)
   downloadCSV(rawData)
 }
 function downloadCSV(data) {

@@ -60,4 +60,14 @@ export default [
       },
     ],
   },
+  {
+    title: '頁尾管理',
+    icon: { icon: 'tabler-brand-pagekit' },
+    children: [
+      {
+        title: '頁尾列表',
+        to: 'apps-webpage-list',
+      },
+    ],
+  },
 ]

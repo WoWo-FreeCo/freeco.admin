@@ -335,7 +335,9 @@ const printInvoice = () => {
         <VCard>
           <VCardText>
             <!-- 👉 Send Invoice Trigger button -->
+            
             <VBtn
+              v-show="false"
               block
               variant="tonal"
               color="secondary"
