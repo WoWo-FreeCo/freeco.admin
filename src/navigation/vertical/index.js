@@ -27,6 +27,20 @@ export default [
     ],
   },
   {
+    title: '橫幅管理',
+    icon: { icon: 'tabler-photo' },
+    children: [
+      {
+        title: '橫幅列表',
+        to: 'apps-banner-list',
+      },
+      {
+        title: '新建橫幅',
+        to: 'apps-banner-add',
+      },
+    ],
+  },
+  {
     title: '會員管理',
     icon: { icon: 'tabler-user' },
     children: [

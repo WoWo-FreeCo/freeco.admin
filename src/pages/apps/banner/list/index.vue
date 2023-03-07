@@ -1,16 +1,16 @@
 <script setup>
 import axios from '@/plugins/service'
-import { DELETE_PRODUCT } from '@/plugins/service/requestURL'
-import { useUserStore } from '@/store/userStore'
+import { DELETE_HOME_BANNER } from '@/plugins/service/requestURL'
+import { useBannerStore } from '@/store/bannerStore'
 import { useRouter } from 'vue-router'
 
-const userStore = useUserStore()
+const bannerStore = useBannerStore()
 const searchQuery = ref('')
 const rowPerPage = ref(10)
 const currentPage = ref(1)
 const totalPage = ref(1)
-const totalUsers = ref(0)
-const users = ref([])
+const totalBanners = ref(0)
+const banners = ref([])
 const selectedRows = ref([])
 
 
@@ -27,10 +27,10 @@ onMounted(async() => {
 })
 
 
-const _users = computed(() =>
-  searchQuery.value ? users.value?.filter(
+const _banners = computed(() =>
+  searchQuery.value ? banners.value?.filter(
     e=> e?.nickname?.toLowerCase().includes(searchQuery.value.toLowerCase()),
-  ) : users.value)
+  ) : banners.value)
 
 // 👉 Fetch Invoices
 watchEffect(() => {
@@ -39,9 +39,9 @@ watchEffect(() => {
 })
 
 async function fetchData() {
-  userStore.fetchUsers({
+  bannerStore.fetchBanners({
   }).then(response => {
-    users.value = response.data.data
+    banners.value = response.data.data
   }).catch(error => {
     console.log(error)
   })
@@ -49,21 +49,21 @@ async function fetchData() {
 
 // 👉 Computing pagination data
 const paginationData = computed(() => {
-  const firstIndex = users.value.length ? (currentPage.value - 1) * rowPerPage.value + 1 : 0
-  const lastIndex = users.value.length + (currentPage.value - 1) * rowPerPage.value
+  const firstIndex = banners.value.length ? (currentPage.value - 1) * rowPerPage.value + 1 : 0
+  const lastIndex = banners.value.length + (currentPage.value - 1) * rowPerPage.value
   
-  return `Showing ${ firstIndex } to ${ lastIndex } of ${ totalUsers.value } entries`
+  return `Showing ${ firstIndex } to ${ lastIndex } of ${ totalBanners.value } entries`
 })
 
-function deleteItem(prod) {
-  selectedItem.value = prod
+function deleteItem(item) {
+  selectedItem.value = item
   isConfirmDialogOpen.value = true
 }
-function editItem(prod) {
+function editItem(item) {
   router.push({
-    path: `/apps/product/edit`,
+    path: `/apps/banner/edit`,
     query: {
-      id: prod.id,
+      id: item.id,
     },
   })
 }
@@ -71,75 +71,46 @@ async function confirm(bool) {
   if(bool) {
     try {
       console.log(selectedItem.value)
-      await axios.delete(`/${DELETE_PRODUCT(selectedItem.value.id)}`)
+      await axios.delete(`/${DELETE_HOME_BANNER(selectedItem.value.id)}`)
       fetchData()
     } catch(e) {
       console.log(e)
     }
   }
 }
-function getUserLevel(level) {
-  switch (level) {
-  case 'SVIP':
-    return 'SVIP'
-  case 'VIP':
-    return 'VIP'
-  default:
-    return '一般會員'
-  }
-}
-function updateCredit(item) {
-  isCreditDialogVisible.value = true
-  selectedItem.value = item
-}
-async function confirmUpdateCredit() {
-  isCreditDialogVisible.value = false
-
-  const quantity = parseInt(addInventoryQuantity.value)
-
-  try {
-    await axios.post(`/${POST_PRODUCT_INVENTORY(selectedItem.value.id)}`, {
-      quantity,
-    })
-  } catch(error) {
-    console.log(error)
-  }
-  await fetchData()
-  
-  addInventoryQuantity.value = 1
-}
 </script>
 
 <template>
   <VCard
-    v-if="_users"
-    id="user-list"
+    v-if="_banners"
+    id="banner-list"
   >
     <VCardText class="d-flex align-center flex-wrap gap-4">
       <div class="me-3">
         <!-- 👉 Create -->
-        <!--
-          <VBtn
+        
+        <VBtn
           prepend-icon="tabler-plus"
-          :to="{ name: 'apps-product-add' }"
-          >
-          新建商品
-          </VBtn> 
-        -->
+          :to="{ name: 'apps-banner-add' }"
+        >
+          新建橫幅
+        </VBtn>
       </div>
 
       <VSpacer />
 
       <div class="d-flex align-center flex-wrap gap-4">
         <!-- 👉 Search  -->
-        <div class="invoice-list-filter">
+        <!--
+          <div class="banner-list-filter">
           <VTextField
-            v-model="searchQuery"
-            style="width: 140px;"
-            placeholder="搜尋用戶名稱"
-            density="compact"
+          v-model="searchQuery"
+          style="width: 140px;"
+          placeholder="搜尋橫幅名稱"
+          density="compact"
           />
-        </div>
+          </div> 
+        -->
 
         <!-- 👉 Select status -->
         <!--
@@ -169,157 +140,55 @@ async function confirmUpdateCredit() {
             scope="col"
             class="text-center"
           >
-            名稱
+            橫幅縮圖
           </th>
 
           <th
             scope="col"
             class="text-center"
           >
-            用戶等級
+            橫幅圖片網址
           </th>
 
           <th
             scope="col"
             class="text-center"
           >
-            Email
+            子頁面
           </th>
 
           <th
             scope="col"
             class="text-center"
           >
-            紅利點數
-          </th>
-          <th
-            scope="col"
-            class="text-center"
-          >
-            FB綁定
-          </th>
-
-          <th
-            scope="col"
-            class="text-center"
-          >
-            IG綁定
-          </th>
-          
-          <th
-            scope="col"
-            class="text-center"
-          >
-            YT綁定
-          </th>
-          <!-- 
-            <th
-            scope="col"
-            class="text-center"
-            >
             操作
-            </th> 
-          -->
+          </th>
         </tr>
       </thead>
 
       <!-- 👉 Table Body -->
       <tbody>
         <tr
-          v-for="user in _users"
-          :key="user.id"
+          v-for="banner in _banners"
+          :key="banner.id"
           style="height: 3.75rem;"
         >
-          <!-- 👉 Id -->
-          <!--
-            <td class="prod-id">
-            <span>#{{ user?.id }}</span>
-            </td> 
-          -->
-
-          <!-- 👉 暱稱 -->
           <td class="text-center">
-            {{ user?.nickname }}
-          </td>
-
-          <td class="text-center">
-            {{ getUserLevel(user?.memberLevel) }}
+            <VImg :src="banner.img" />
           </td>
           
           <td class="text-center">
-            {{ user.email }}
+            {{ banner?.img }}
           </td>
 
           <td class="text-center">
-            {{ user?.rewardCredit }}
+            {{ banner?.href }}
           </td>
 
-          <td class="text-center">
-            <VIcon
-              v-if="user?.FacebookGroupActivated"
-              color="success"
-              :size="22"
-              icon="tabler-circle-check"
-            />
-            <VIcon
-              v-else
-              color="error"
-              :size="22"
-              icon="tabler-circle-x"
-            />
-          </td>
-
-          <td class="text-center">
-            <VIcon
-              v-if="user?.IGFollowActivated"
-              color="success"
-              :size="22"
-              icon="tabler-circle-check"
-            />
-            <VIcon
-              v-else
-              color="error"
-              :size="22"
-              icon="tabler-circle-x"
-            />
-          </td>
-
-          <td class="text-center">
-            <VIcon
-              v-if="user?.YouTubeChannelActivated"
-              color="success"
-              :size="22"
-              icon="tabler-circle-check"
-            />
-            <VIcon
-              v-else
-              color="error"
-              :size="22"
-              icon="tabler-circle-x"
-            />
-          </td>
-
-
-          <!-- 👉 Actions -->
           <td
-            v-if="false"
+            v-if="true"
             style="width: 4rem;"
           >
-            <!--
-              <VBtn
-              icon
-              variant="text"
-              color="default"
-              size="x-small"
-              :to="{ name: 'apps-product-preview-id', params: { id: product.id } }"
-              >
-              <VIcon
-              :size="22"
-              icon="tabler-eye"
-              />
-              </VBtn> 
-            -->
-
             <VBtn
               icon
               variant="text"
@@ -335,7 +204,7 @@ async function confirmUpdateCredit() {
                 <VList>
                   <VListItem
                     value="edit"
-                    @click="editItem(product)"
+                    @click="editItem(banner)"
                   >
                     <template #prepend>
                       <VIcon
@@ -350,7 +219,7 @@ async function confirmUpdateCredit() {
                   </VListItem>
                   <VListItem
                     value="delete"
-                    @click="deleteItem(product)"
+                    @click="deleteItem(banner)"
                   >
                     <template #prepend>
                       <VIcon
@@ -371,7 +240,7 @@ async function confirmUpdateCredit() {
       </tbody>
 
       <!-- 👉 table footer  -->
-      <tfoot v-show="!users?.length">
+      <tfoot v-show="!banners?.length">
         <tr>
           <td
             colspan="8"
@@ -408,7 +277,7 @@ async function confirmUpdateCredit() {
     <!-- !SECTION -->
     <ConfirmDialog
       v-model:isDialogVisible="isConfirmDialogOpen"
-      confirmation-msg="確定要刪除選擇的商品？"
+      confirmation-msg="確定要刪除選擇的橫幅？"
       @confirm="confirm"
     />
     <!--  -->
