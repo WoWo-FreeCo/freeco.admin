@@ -1,0 +1,1 @@
+import{a as r,b as s}from"./requestURL.2ee67e65.js";import{bk as t}from"./index.81a573ca.js";const i=t("UserStore",{actions:{fetchUsers(e){return r.get(`/${s}?take=200`,{params:e})}}});export{i as u};
