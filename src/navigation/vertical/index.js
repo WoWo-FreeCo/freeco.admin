@@ -70,4 +70,14 @@ export default [
       },
     ],
   },
+  {
+    title: '連續登入管理',
+    icon: { icon: 'tabler-checkbox' },
+    children: [
+      {
+        title: '登入天數列表',
+        to: 'apps-daily-check-list',
+      },
+    ],
+  },
 ]
