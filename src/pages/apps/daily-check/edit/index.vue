@@ -63,6 +63,10 @@ async function updateDailyCheck() {
       credit: parseInt(inputField.value.credit),
     }
 
+    if (!inputField.value.video) {
+      delete body.video
+    }
+
     await axios.put(`/${UPDATE_DAILY_CHECK(curDailyCheck.value.index)}`, body)
 
     alert('已更新連續登入資料')
