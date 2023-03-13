@@ -150,13 +150,19 @@ const printInvoice = () => {
               <p class="mb-1">
                 行動電話：{{ orderData?.consignee?.cellphone }}
               </p>
-              <p class="mb-1">
-                電話{{ orderData?.consignee?.telephone }}
+              <p
+                v-show="false"
+                class="mb-1"
+              >
+                電話：{{ orderData?.consignee?.telephone }}
               </p>
               <p class="mb-1">
-                地址一：{{ orderData?.consignee?.addressDetailOne }}
+                地址：{{ orderData?.consignee?.addressDetailOne }}
               </p>
-              <p class="mb-1">
+              <p
+                v-show="false"
+                class="mb-1"
+              >
                 地址二：{{ orderData?.consignee?.addressDetailTwo }}
               </p>
               <p class="mb-1">
